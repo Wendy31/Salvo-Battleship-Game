@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - main",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.codeoftheweb.main.main",
+            "args": "",
+            "projectName": "salvo"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - SalvoApplication",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.codeoftheweb.salvo.SalvoApplication",
+            "args": "",
+            "projectName": "salvo"
+        }
+    ]
+}

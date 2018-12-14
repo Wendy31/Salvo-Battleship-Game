@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <title>Ship Location</title>
+</head>
+
+<body>
+    <div class="container-flow" id="app">
+        <h2>Ship Locations!</h2>
+        <p>{{currentPlayer}} (you) vs {{opponentPlayer}}</p>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
+                </tr>
+                <tr v-for="row in gridCells">
+                    <!-- each row make 10 rows -->
+                    <td>{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
+                    <td v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}`"></td>
+                    <!-- second td, make 10 -->
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="scripts/game.js"></script>
+</body>
+
+</html>

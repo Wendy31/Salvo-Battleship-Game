@@ -1,0 +1,14 @@
+table {
+    width: 80%;
+}
+
+th,
+td {
+    border: 1px solid rgb(129, 129, 155);
+    background-color: rgb(101, 152, 245);
+    height: 10vh;
+}
+
+.gridLocation {
+    background-color: blue;
+}
