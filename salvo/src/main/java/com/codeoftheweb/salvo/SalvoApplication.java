@@ -20,7 +20,7 @@ public class SalvoApplication {
 
     @Bean // returns an object?
     public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository,
-            GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository) {
+                                      GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository) {
         return (args) -> {
             // ........................create new players.......................//
             Player p1 = new Player("j.bauer@ctu.gov");
@@ -82,6 +82,10 @@ public class SalvoApplication {
             GamePlayer gp11 = new GamePlayer(p3, g6);
             GamePlayer gp12 = new GamePlayer();
 
+            //.... game seven ....//
+            GamePlayer gp13 = new GamePlayer();
+            GamePlayer gp14 = new GamePlayer();
+
             //.... game eight ....//
             GamePlayer gp15 = new GamePlayer(p3, g8);
             GamePlayer gp16 = new GamePlayer(p4, g8);
@@ -99,6 +103,8 @@ public class SalvoApplication {
             gamePlayerRepository.save(gp10);
             gamePlayerRepository.save(gp11);
             gamePlayerRepository.save(gp12);
+            gamePlayerRepository.save(gp13);
+            gamePlayerRepository.save(gp14);
             gamePlayerRepository.save(gp15);
             gamePlayerRepository.save(gp16);
 
@@ -227,6 +233,54 @@ public class SalvoApplication {
             salvoRepository.save(salvo19);
             salvoRepository.save(salvo20);
             salvoRepository.save(salvo21);
+
+            // ......................create scores.......................//
+            //.... game one ....//
+            Score score1 = new Score(p1, g1, 1.0);
+            Score score2 = new Score(p2, g1, 0.0);
+
+            //.... game two ....//
+            Score score3 = new Score(p1, g2, 0.5);
+            Score score4 = new Score(p2, g2,0.5);
+
+            //.... game three ....//
+            Score score5 = new Score(p2, g3,1.0);
+            Score score6 = new Score(p4, g3,0.0);
+
+            //.... game four ....//
+            Score score7 = new Score(p2, g4, 0.5);
+            Score score8 = new Score(p1, g4, 0.5);
+
+            //.... game five ....//
+            Score score9 = new Score();
+            Score score10 = new Score();
+
+            //.... game six ....//
+            Score score11 = new Score();
+
+            //.... game seven ....//
+            Score score12 = new Score();
+
+            //.... game eight ....//
+            Score score13 = new Score();
+            Score score14 = new Score();
+
+            scoreRepository.save(score1);
+            scoreRepository.save(score2);
+            scoreRepository.save(score3);
+            scoreRepository.save(score4);
+            scoreRepository.save(score5);
+            scoreRepository.save(score6);
+            scoreRepository.save(score7);
+            scoreRepository.save(score8);
+            scoreRepository.save(score9);
+            scoreRepository.save(score10);
+            scoreRepository.save(score11);
+            scoreRepository.save(score12);
+            scoreRepository.save(score13);
+            scoreRepository.save(score14);
+
+
         };
     }
 }

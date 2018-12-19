@@ -1,14 +1,46 @@
+body {
+  background-image: url("../assets/battleship-background.jpg");
+}
+
 table {
-    width: 80%;
+  width: 50%;
+  height: 200px;
+  background-color: black;
+  margin: 10px;
+  margin-left: -40px;
+  margin-right: 40px;
+}
+
+h3 {
+  position: relative;
+  margin-top: -5%;
 }
 
 th,
 td {
-    border: 1px solid rgb(129, 129, 155);
-    background-color: rgb(101, 152, 245);
-    height: 10vh;
+  border: 1px solid rgb(129, 129, 155);
+  background-color: rgb(101, 152, 245);
+  height: 50px;
+  width: 50px;
+  text-align: center;
 }
 
-.gridLocation {
-    background-color: blue;
+.shipLocation {
+  background-color: blue;
+}
+
+.gameViewGrids {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 10%;
+}
+
+/*...............Salvoes...................*/
+.opponentSalvoes,
+.hostSalvoes {
+  background-color: brown;
+  /* background-image: url("../assets/shot.png"); */
+  height: 50px;
+  width: 50px;
 }

@@ -1,11 +1,11 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 
 @Entity
 public class GamePlayer {
@@ -42,6 +42,8 @@ public class GamePlayer {
         this.player = player;
         this.game = game;
         this.date = new Date();
+        player.addGamePlayer(this);
+        game.addGamePlayer(this);
     }
 
 
@@ -82,11 +84,6 @@ public class GamePlayer {
         this.ships = ships;
     }
 
-    public void addShip(Ship ship) {
-        ship.setGamePlayer(this); // a ship is set to gamePlayer?
-        ships.add(ship); // a ship is added into list of Ships
-    }
-
     public Set<Salvo> getSalvoes() {
         return salvoes;
     }
@@ -95,11 +92,16 @@ public class GamePlayer {
         this.salvoes = salvoes;
     }
 
-    public void addSalvo(Salvo salvo) {
-        salvo.setGamePlayer(this); // set this gamePlayer to salvo class
-        salvoes.add(salvo); // add one salvo to list of salvos (variable) at a time
+
+    // other methods
+
+    public void addShip(Ship ship) {
+        ships.add(ship); // a ship is added into list of Ships
     }
 
+    public void addSalvo(Salvo salvo) {
+        salvoes.add(salvo); // add one salvo to list of salvos (variable) at a time
+    }
 
     @Override
     public String toString() {

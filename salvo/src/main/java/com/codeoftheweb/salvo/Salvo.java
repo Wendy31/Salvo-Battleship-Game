@@ -2,6 +2,7 @@ package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity // maps a class to a table

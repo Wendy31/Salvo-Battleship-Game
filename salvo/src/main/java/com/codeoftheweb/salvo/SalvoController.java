@@ -4,12 +4,14 @@ package com.codeoftheweb.salvo;
 // controls what users want to see. Controls flow of data.
 // controls what user can see, methods to be executed
 
+import org.hibernate.validator.cfg.defs.CodePointLengthDef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,7 +36,7 @@ public class SalvoController {
 
     private Map<String, Object> getGameInfo(Game game) { // method to mutate (change form) game object. Need to pass
         // Game game thru as param.
-        Map<String, Object> getGameInfo = new HashMap<>(); // map called getGameInfo
+        Map<String, Object> getGameInfo = new LinkedHashMap<>(); // map called getGameInfo
         getGameInfo.put("id", game.getId()); // put Key ID
         getGameInfo.put("created", game.getDate()); // put Key Created
         getGameInfo.put("gamePlayers", game.getGamePlayers() // gamePlayers has all game players
@@ -42,34 +44,43 @@ public class SalvoController {
                 .map(gamePlayer -> getGamePlayerInfo(gamePlayer)) // gamePlayers has gamePlayer. For each gamePlayer do
                 // function and mutate gamePlayer.
                 .collect(toList()));
+        getGameInfo.put("scores", game.getScores()
+                .stream()
+                .map(score -> getScoreInfo(score))
+                .collect(toList()));
         return getGameInfo; // return Map object
     }
 
     private Map<String, Object> getGamePlayerInfo(GamePlayer gamePlayer) {
-        Map<String, Object> getGamePlayerInfo = new HashMap<>();
+        Map<String, Object> getGamePlayerInfo = new LinkedHashMap<>();
         getGamePlayerInfo.put("id", gamePlayer.getId()); // gets gamePlayer Id
-        getGamePlayerInfo.put("player", getPlayerInfo(gamePlayer.getPlayer())); // Key player + add function, insert a
-        // player in param.
+        getGamePlayerInfo.put("player", getPlayerInfo(gamePlayer.getPlayer()));
         return getGamePlayerInfo;
     }
 
     private Map<String, Object> getPlayerInfo(Player player) {
-        Map<String, Object> getPlayerInfo = new HashMap<>();
+        Map<String, Object> getPlayerInfo = new LinkedHashMap<>();
         getPlayerInfo.put("id", player.getId());
         getPlayerInfo.put("email", player.getUserName());
         return getPlayerInfo;
     }
 
+    private Map<String, Object> getScoreInfo(Score score) {
+        Map<String, Object> getScoreInfo = new LinkedHashMap<>();
+        getScoreInfo.put("id", score.getPlayer().getId());
+        getScoreInfo.put("score", score.getScore());
+        return getScoreInfo;
+    }
+
 
     //............................Game View Info..................................//
-
     @Autowired
     private GamePlayerRepository gamePlayerRepo; // data is accessed from GamePlayerRepo
 
     @RequestMapping("/game_view/{gamePlayerId}")
     private Map<String, Object> findGamePlayersInOneGame(@PathVariable Long gamePlayerId) { //Annotation extracts desired game player ID from URL
         GamePlayer gamePlayer = gamePlayerRepo.getOne(gamePlayerId);
-        Map<String, Object> getGameView = new HashMap<>(); // creates gameView object with given data
+        Map<String, Object> getGameView = new LinkedHashMap<>(); // creates gameView object with given data
         getGameView.put("id", gamePlayer.getGame().getId()); // start point from gamePlayer, to access Game, then gameID
         getGameView.put("created", gamePlayer.getGame().getDate());
         getGameView.put("gamePlayers", gamePlayer.getGame().getGamePlayers()
@@ -80,10 +91,11 @@ public class SalvoController {
                 .stream() // loop thru each ship
                 .map(ship -> getCurrentGPShip(ship)) // map and make another object using method below
                 .collect(toList()));
-        getGameView.put("salvoes", gamePlayer.getSalvoes() // GP has set of ships
-                .stream() // loop thru each salvo
-                .map(salvo -> getSalvoInfo(salvo)) // map and make another object using method below
-                .collect(toList()));
+        getGameView.put("salvoes", getSalvoInfo(gamePlayer.getGame().getGamePlayers() //
+                .stream()
+                .map(gp -> gp.getSalvoes())
+                .flatMap(salvoes -> salvoes.stream())
+                .collect(Collectors.toSet())));// GP has set of ships
         return getGameView;
     }
 
@@ -94,22 +106,20 @@ public class SalvoController {
         return getCurrentGPShip;
     }
 
-
-    private Map<String, Object> getSalvoInfo(Salvo salvo) {
-        Map<String, Object> getSalvoInfo = new HashMap<>();
-        getSalvoInfo.put("id", salvo.getGamePlayer().getId()
-                .stream()
-                .map(salvo -> getTurnAndLocation(salvo))
-                .collect(toList()));
+    private Map<Long, Map> getSalvoInfo(Set<Salvo> salvos) { // Map with Long (id) as key, with another Map inside
+        Map<Long, Map> getSalvoInfo = new HashMap<>();
+        Map<String, List<String>> salvoTurnAndLocation; // second Map is String (turn) with list of string values (locations)
+        for (Salvo salvo : salvos) { // loop thru all salvo in salvoes
+            if (!getSalvoInfo.containsKey(salvo.getGamePlayer().getId())) { // if main map does not contain key ID
+                salvoTurnAndLocation = new HashMap<>(); // make new map
+                salvoTurnAndLocation.put(salvo.getTurn(), salvo.getLocation()); // put Turn as key, Location as value
+                getSalvoInfo.put(salvo.getGamePlayer().getId(), salvoTurnAndLocation); // and put main map with key ID, and turn/location as value
+            } else { // else if map has id of first player, salvoTurnAndLocation-Map becomes main Map with opponent ID
+                salvoTurnAndLocation = getSalvoInfo.get(salvo.getGamePlayer().getId());
+                salvoTurnAndLocation.put(salvo.getTurn(), salvo.getLocation()); // with Opponent turn/ location info
+            }
+        }
         return getSalvoInfo;
     }
-
-    private Map<String, Object> getTurnAndLocation(Salvo salvo) {
-        Map<String, Object> getTurnAndLocation = new HashMap<>();
-        getTurnAndLocation.put("turn", salvo.getTurn());
-        getTurnAndLocation.put("locations", salvo.getLocation());
-        return getTurnAndLocation;
-    }
-
 
 }
