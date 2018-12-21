@@ -83,7 +83,7 @@ public class SalvoApplication {
             GamePlayer gp12 = new GamePlayer();
 
             //.... game seven ....//
-            GamePlayer gp13 = new GamePlayer();
+            GamePlayer gp13 = new GamePlayer(p4, g7);
             GamePlayer gp14 = new GamePlayer();
 
             //.... game eight ....//

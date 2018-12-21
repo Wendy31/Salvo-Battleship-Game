@@ -9,7 +9,7 @@
     <title>Ship Location</title>
 </head>
 
-<body>
+<body class="gameBackground">
     <div class="container-flow" id="app">
         <h2>Ship Locations!</h2>
         <p>{{currentPlayer}} (you) vs {{opponentPlayer}}</p>
@@ -17,7 +17,7 @@
 
         <div class="gameViewGrids">
             <h3>Ship Grid</h3>
-            <table id="currentPlayerGrid">
+            <table class="gridTable">
                 <tbody>
                     <tr>
                         <th v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
@@ -32,15 +32,15 @@
             </table>
 
             <h3>Salvo Grid</h3>
-            <table id="opponentPlayerGrid">
+            <table class="gridTable">
                 <tbody>
                     <tr>
-                        <th v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
+                        <th class="gridTh" v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
                     </tr>
                     <tr v-for="row in gridCells">
                         <!-- each row make 10 rows -->
-                        <td>{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
-                        <td v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}opp`"></td>
+                        <td class="gridTD">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
+                        <td class="gridTD" v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}opp`"></td>
                         <!-- second td, make 10 -->
                     </tr>
                 </tbody>

@@ -67,7 +67,7 @@ public class SalvoController {
 
     private Map<String, Object> getScoreInfo(Score score) {
         Map<String, Object> getScoreInfo = new LinkedHashMap<>();
-        getScoreInfo.put("id", score.getPlayer().getId());
+        getScoreInfo.put("name", score.getPlayer().getUserName());
         getScoreInfo.put("score", score.getScore());
         return getScoreInfo;
     }

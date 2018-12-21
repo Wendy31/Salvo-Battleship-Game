@@ -1,8 +1,8 @@
-body {
+.gameBackground {
   background-image: url("../assets/battleship-background.jpg");
 }
 
-table {
+.gridTable {
   width: 50%;
   height: 200px;
   background-color: black;
@@ -16,8 +16,8 @@ h3 {
   margin-top: -5%;
 }
 
-th,
-td {
+.gridTh,
+.gridTD {
   border: 1px solid rgb(129, 129, 155);
   background-color: rgb(101, 152, 245);
   height: 50px;
@@ -43,4 +43,33 @@ td {
   /* background-image: url("../assets/shot.png"); */
   height: 50px;
   width: 50px;
+}
+
+/*.................LeaderBoard.....................*/
+.leaderBoard tbody {
+  border: 2px solid black;
+}
+
+.leaderboardBody {
+  background: url("../assets/leaderboard-background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.gpTable {
+  width: 50%;
+  margin-bottom: 3%;
+  background-color: rgba(67, 109, 85, 0.612);
+  color: azure;
+}
+
+.leaderboardTable {
+  width: 70%;
+  background-color: rgba(8, 41, 25, 0.612);
+  margin-bottom: 5%;
+  color: azure;
+
+
 }

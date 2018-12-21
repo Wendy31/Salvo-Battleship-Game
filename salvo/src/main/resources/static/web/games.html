@@ -1,28 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Salvo!</title>
-  </head>
 
-  <body>
-    <div class="container-flow" id="app">
-      <h3>Salvo!</h3>
-      <ol>
-        <li v-for="game in gamesData">
-          {{ game.created }}
-          <ul>
-            <li v-for="gamePlayer in game.gamePlayers">
-              {{ gamePlayer.player.email }}
-            </li>
-          </ul>
-        </li>
-      </ol>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <title>Salvo!</title>
+</head>
 
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="scripts/games.js"></script>
-  </body>
+<body class="leaderboardBody">
+  <div class="container" id="app">
+
+    <h2>Salvo!</h2>
+
+    <h4>Game Player Information</h4>
+    <table class="table table-bordered text-center gpTable">
+      <thead>
+        <tr>
+          <th class="text-center" v-for="col in gamesThead">{{col}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="game in gamesData">
+          <td>{{ game.created }}</td>
+          <td v-for="gp in game.gamePlayers">
+            <span v-if="game.gamePlayers[1] == undefined && game.gamePlayers[0] == undefined"> Waiting for opponent</span>
+            <span v-else>{{ gp.player.email}} </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <h4>Leaderboard</h4>
+    <table class="table table-bordered text-center leaderboardTable">
+      <thead class="thead-dark">
+        <tr>
+          <th class="text-center" v-for="col in columnName">{{col}}</th>
+        <tr>
+      </thead>
+      <tbody>
+        <tr v-for="(info, index) in leaderboard">
+          <td>{{index +1}}</td>
+          <td>{{info.name}}</td>
+          <td>{{info.total_scores}}</td>
+          <td>{{info.wins}}</td>
+          <td>{{info.losses}}</td>
+          <td>{{info.ties}}</td>
+        </tr>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="scripts/games.js"></script>
+</body>
+
 </html>
