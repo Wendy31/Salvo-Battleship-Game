@@ -1,3 +1,4 @@
+/*.................Battleships.....................*/
 .gameBackground {
   background-image: url("../assets/battleship-background.jpg");
 }
@@ -70,6 +71,4 @@ h3 {
   background-color: rgba(8, 41, 25, 0.612);
   margin-bottom: 5%;
   color: azure;
-
-
 }

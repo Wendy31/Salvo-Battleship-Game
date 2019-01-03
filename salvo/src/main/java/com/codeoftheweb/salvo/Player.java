@@ -22,12 +22,15 @@ public class Player {
 
     private String userName;
 
+    private String password;
+
 
     // Constructors x2
     public Player() { }
 
-    public Player(String userName) {
+    public Player(String userName, String password) {
         this.userName = userName;
+        this.password = password;
     }
 
 
@@ -56,6 +59,13 @@ public class Player {
         this.scores = scores;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     // other methods
     public void addGamePlayer(GamePlayer gamePlayer) { // adds gamePlayer to gamePlayers
@@ -70,7 +80,6 @@ public class Player {
         return this.scores.stream().filter(score -> score.getGame().equals(game)).findFirst().orElse(null);
     }
 
-
     @Override
     public String toString() {
         return "Player{" +
@@ -78,6 +87,7 @@ public class Player {
                 ", gamePlayerSet=" + gamePlayerSet +
                 ", scores=" + scores +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

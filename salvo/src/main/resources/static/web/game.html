@@ -20,12 +20,12 @@
             <table class="gridTable">
                 <tbody>
                     <tr>
-                        <th v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
+                        <th class="gridTh" v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
                     </tr>
                     <tr v-for="row in gridCells">
                         <!-- each row make 10 rows -->
-                        <td>{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
-                        <td v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}`"></td>
+                        <td class="gridTD">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
+                        <td class="gridTD" v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}`"></td>
                         <!-- second td, make 10 -->
                     </tr>
                 </tbody>

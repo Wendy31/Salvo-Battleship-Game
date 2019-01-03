@@ -4,15 +4,14 @@ package com.codeoftheweb.salvo;
 // controls what users want to see. Controls flow of data.
 // controls what user can see, methods to be executed
 
-import org.hibernate.validator.cfg.defs.CodePointLengthDef;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toList;
 
 @RestController // gets data on request and returns a data (JSON) from GameRepo
@@ -21,10 +20,6 @@ public class SalvoController {
 
 
     //..................................Game Info....................................//
-
-    @Autowired
-    private GameRepository gameRepo; // variable that stores data from GameRepo
-
     @RequestMapping("/games")
     private List<Object> getAllGames() { // creates a list of object called "getAllGames"
         return gameRepo.findAll() // gets ALL games from gameRepo
@@ -50,6 +45,11 @@ public class SalvoController {
                 .collect(toList()));
         return getGameInfo; // return Map object
     }
+
+    @Autowired
+    private PlayerRepository playerRepository;
+    @Autowired
+    private GameRepository gameRepo; // variable that stores data from GameRepo
 
     private Map<String, Object> getGamePlayerInfo(GamePlayer gamePlayer) {
         Map<String, Object> getGamePlayerInfo = new LinkedHashMap<>();
@@ -121,5 +121,27 @@ public class SalvoController {
         }
         return getSalvoInfo;
     }
+
+
+
+
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//
+//    @RequestMapping(path = "/players", method = RequestMethod.POST)
+//    public ResponseEntity<Object> register(
+//            @RequestParam String userName, @RequestParam String password) {
+//
+//        if (userName.isEmpty() || password.isEmpty()) {
+//            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+//        }
+//
+//        if (playerRepository.findByUserName(userName) !=  null) {
+//            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+//        }
+//
+//        playerRepository.save(new Player(userName, passwordEncoder.encode(password)));
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
 
 }

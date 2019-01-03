@@ -29,6 +29,39 @@ var app = new Vue({
 
         });
     },
+    login(username, password) {
+      fetch("/api/login", { // fetch data from this path
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST', // POST method = create (posting data to the back)
+          body: 'userName=' + username + '&password=' + password,
+        })
+        .then(function (data) { // only one promise because not returning JSON
+          console.log('Request success: ', data);
+        })
+        .catch(function (error) {
+          console.log('Request failure: ', error);
+        });
+    },
+
+    logout() {
+      fetch("/api/logout", {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST'
+        })
+        .then(function (data) {
+          console.log('Request success: ', data);
+        })
+        .catch(function (error) {
+          console.log('Request failure: ', error);
+        });
+    },
+
     createLeaderboard() {
       var allNames = [];
       for (var i = 0; i < this.gamesData.length; i++) {
