@@ -14,38 +14,78 @@
         <h2>Ship Locations!</h2>
         <p>{{currentPlayer}} (you) vs {{opponentPlayer}}</p>
 
+        <form onsubmit="return false">
+            <button v-show="logoutBtn" v-on:click="logout()">Log out</button>
+        </form>
 
         <div class="gameViewGrids">
             <h3>Ship Grid</h3>
-            <table class="gridTable">
+            <table id="tableHost" class="gridTable">
                 <tbody>
                     <tr>
                         <th class="gridTh" v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
                     </tr>
                     <tr v-for="row in gridCells">
                         <!-- each row make 10 rows -->
-                        <td class="gridTD">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
-                        <td class="gridTD" v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}`"></td>
+                        <td class="gridRow">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
+                        <td class="hostGridTD" v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}`"></td>
                         <!-- second td, make 10 -->
                     </tr>
                 </tbody>
             </table>
 
             <h3>Salvo Grid</h3>
-            <table class="gridTable">
+            <table id="tableOpponent" class="gridTable">
                 <tbody>
                     <tr>
                         <th class="gridTh" v-for="col in columnName">{{col}}</th> <!-- loop th and append col -->
                     </tr>
                     <tr v-for="row in gridCells">
                         <!-- each row make 10 rows -->
-                        <td class="gridTD">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
+                        <td class="gridRow">{{rowName[row]}}</td> <!-- first td, put rowName is position of [i]  -->
                         <td class="gridTD" v-for="cell in gridCells" v-bind:id="`${rowName[row]}${cell}opp`"></td>
                         <!-- second td, make 10 -->
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <table class="shipKeyTable">
+            <tr>
+                <th>Number</th>
+                <th>Type</th>
+                <th>Length</th>
+            </tr>
+            <tr>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><button v-on:click="getLength('aircraft')"> Aircraft Carrier</button></td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><button v-on:click="getLength('battleship')">Battleship</button></td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><button v-on:click="getLength('submarine')">Submarine</button></td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><button v-on:click="getLength('destroyer')">Destroyer</button></td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><button v-on:click="getLength('patrol')">Patrol Boat</button></td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </tr>
+        </table>
 
 
     </div>

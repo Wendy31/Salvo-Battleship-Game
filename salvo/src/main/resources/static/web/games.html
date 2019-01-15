@@ -15,15 +15,22 @@
 
     <h2>Salvo!</h2>
 
-    <form id="login-form" onsubmit="return false">
-      <label>Name: <input type="text" name="username"></label>
-      <label>Password: <input type="text" name="password"></label>
-      <button v-on:click="login('username, password')">Log in</button>
+    <p v-show="currentUserName">{{username}}</p>
+
+    <form id="form1" onsubmit="return false">
+      <label>Name: <input type="text" v-model="username"></label>
+      <label>Password: <input type="text" v-model="password"></label>
+      <button v-show="!currentUser" v-on:click="login()">Log in</button>
     </form>
 
-    <form id="logout-form" onsubmit="return false">
-      <button v-on:click="logout()">Log out</button>
+    <form id="register" onsubmit="return false">
+      <button v-show="!currentUser" v-on:click="register()">Register</button>
     </form>
+
+    <form onsubmit="return false">
+      <button v-show="currentUser" v-on:click="logout()">Log out</button>
+    </form>
+
 
     <h4>Game Player Information</h4>
     <table class="table table-bordered text-center gpTable">
@@ -34,14 +41,24 @@
       </thead>
       <tbody>
         <tr v-for="game in gamesData">
-          <td>{{ game.created }}</td>
+          <td>Game {{ game.id }}</td>
+
           <td v-for="gp in game.gamePlayers">
-            <span v-if="game.gamePlayers[1] == undefined && game.gamePlayers[0] == undefined"> Waiting for opponent</span>
-            <span v-else>{{ gp.player.email}} </span>
+            <span>{{ gp.player.email}} </span>
           </td>
+
+          <td v-if="game.gamePlayers.length == 1"> Waiting for opponent</td>
+          <td v-if="showReenter(game)"><a v-bind:href="'game.html?gp=' + getGpID(game)">Re-enter game</a></td>
+          <td v-else-if="showJoinGame(game)"><a href='#' v-on:click="joinGame(game.id)">Join game</a></td>
+          <td v-else>...</td>
+
         </tr>
       </tbody>
     </table>
+
+    <form onsubmit="return false">
+      <button v-show="createGameBtn" v-on:click="createGame()">Create New Game</button>
+    </form>
 
 
     <h4>Leaderboard</h4>
@@ -66,8 +83,7 @@
 
   </div>
 
-  <script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

@@ -18,7 +18,9 @@ h3 {
 }
 
 .gridTh,
-.gridTD {
+.hostGridTD,
+.gridTD,
+.gridRow {
   border: 1px solid rgb(129, 129, 155);
   background-color: rgb(101, 152, 245);
   height: 50px;
@@ -71,4 +73,17 @@ h3 {
   background-color: rgba(8, 41, 25, 0.612);
   margin-bottom: 5%;
   color: azure;
+}
+
+a {
+  color: red;
+}
+
+/*.................Ship key table.....................*/
+.shipKeyTable {
+  width: 30%;
+  background-color: rgba(107, 15, 15, 0.612);
+  color: azure;
+  text-align: center;
+  margin: 5%;
 }

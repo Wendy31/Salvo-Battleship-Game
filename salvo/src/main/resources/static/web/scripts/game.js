@@ -11,6 +11,33 @@ var app = new Vue({
     currentPlayer: null,
     opponentPlayer: null,
     salvoes: {},
+    logoutBtn: true,
+    shipObj: [{
+        shipType: "aircraft",
+        location: [],
+        length: "5"
+      },
+      {
+        shipType: "battleship",
+        location: [],
+        length: "4"
+      },
+      {
+        shipType: "submarine",
+        location: [],
+        length: "3"
+      },
+      {
+        shipType: "destroyer",
+        location: [],
+        length: "3"
+      },
+      {
+        shipType: "patrol",
+        location: [],
+        length: "2"
+      }
+    ]
   },
 
   methods: {
@@ -23,15 +50,74 @@ var app = new Vue({
           return data.json(); // makes it into a JSON object
         })
         .then(function (myData) {
-          app.gamesViewData = myData; // then stores it in gamesViewData
-          console.log(app.gamesViewData);
-          app.ships = myData.ships;
-          console.log(app.ships); // log data object
-          app.getShipLocation(); // function needs data first in order to run. Get data, then it can show ship location.
-          app.showGameAndPlayerInfoGV();
-          app.salvoes = myData.salvoes;
-          console.log(app.salvoes);
-          app.getSalvoLocation();
+          if (myData.error) {
+            alert(myData.error);
+            history.back();
+          } else {
+            // if (myData.player.email) {
+            //   app.userExists = true;
+            // };
+            app.gamesViewData = myData; // then stores it in gamesViewData
+            console.log(app.gamesViewData);
+            app.ships = myData.ships;
+            console.log(app.ships); // log data object
+            app.getShipLocation(); // function needs data first in order to run. Get data, then it can show ship location.
+            app.showGameAndPlayerInfoGV();
+            app.salvoes = myData.salvoes;
+            console.log(app.salvoes);
+            app.getSalvoLocation();
+            // app.highlightPreLocation();
+          }
+        });
+    },
+
+    logout() {
+      fetch("/api/logout", {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          method: "POST"
+        })
+        .then(function (data) {
+          window.location.href = 'games.html';
+          console.log("Request success: ", data);
+        })
+        .catch(function (error) {
+          console.log("Request failure: ", error);
+        });
+    },
+
+    postShips() {
+      fetch("/api/games/players/" + gpid + "/ships", {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify([{
+              shipType: "patrol boat",
+              location: ["A1", "B1", "C1"]
+            },
+            {
+              shipType: "destroyer",
+              location: ["H5", "H6"]
+            }
+          ])
+        })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (json) {
+          if (json.error) {
+            alert(json.error);
+          } else {
+            alert(json.success);
+          }
+        })
+        .catch(function (error) {
+          console.log("Request failure: ", error);
         });
     },
 
@@ -55,6 +141,63 @@ var app = new Vue({
           gridLocation.classList.add("shipLocation"); // "H4" element is added a class call "gridLocation", for CSS styling
         }
       }
+    },
+
+    getLength(shipType) {
+      switch (shipType) {
+        case "aircraft": // if its aircraft run the function below and pass 5 thru
+          this.highlightPreLocation(5);
+          break;
+
+        case "battleship":
+          this.highlightPreLocation(4);
+          break;
+
+        case "submarine":
+          this.highlightPreLocation(3);
+          break;
+
+        case "destroyer":
+          this.highlightPreLocation(3);
+          break;
+
+        case "patrol":
+          this.highlightPreLocation(2);
+          break;
+
+        default:
+          break;
+      }
+    },
+
+    highlightPreLocation(shipLength) {
+      console.log(shipLength);
+
+      var cells = document.querySelectorAll(".hostGridTD");
+      cells.forEach(function (cell) {
+        var cellID = cell.id;
+        cellID.slice(1);
+        console.log(cellID);
+
+      });
+
+      // highlights cells under mouse
+      tableHost.onmouseover = function (event) {
+        let target = event.target.closest('td');
+        target.style.background = 'pink';
+        console.log()
+      };
+      tableHost.onmouseout = function (event) {
+        let target = event.target.closest('td');
+        target.style.background = '';
+      };
+
+      tableHost.addEventListener("click", function (event) {
+        if (event.target && event.target.nodeName == "TD") {
+          var cell = document.getElementById("id");
+          console.log(cell);
+        }
+      });
     },
 
     showGameAndPlayerInfoGV() {
