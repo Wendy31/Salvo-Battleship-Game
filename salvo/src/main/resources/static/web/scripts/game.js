@@ -12,7 +12,12 @@ var app = new Vue({
     opponentPlayer: null,
     salvoes: {},
     logoutBtn: true,
-    shipObj: [{
+    wrongPlace: false,
+    existingShip: false,
+    horizontal: true,
+    vertical: false,
+    shipObj: [
+      {
         shipType: "aircraft",
         location: [],
         length: "5"
@@ -43,20 +48,17 @@ var app = new Vue({
   methods: {
     fetchData() {
       fetch(this.apiGameView, {
-          // fectch data from controller
-          method: "GET"
-        })
-        .then(function (data) {
+        // fectch data from controller
+        method: "GET"
+      })
+        .then(function(data) {
           return data.json(); // makes it into a JSON object
         })
-        .then(function (myData) {
+        .then(function(myData) {
           if (myData.error) {
             alert(myData.error);
             history.back();
           } else {
-            // if (myData.player.email) {
-            //   app.userExists = true;
-            // };
             app.gamesViewData = myData; // then stores it in gamesViewData
             console.log(app.gamesViewData);
             app.ships = myData.ships;
@@ -66,57 +68,57 @@ var app = new Vue({
             app.salvoes = myData.salvoes;
             console.log(app.salvoes);
             app.getSalvoLocation();
-            // app.highlightPreLocation();
           }
         });
     },
 
     logout() {
       fetch("/api/logout", {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          method: "POST"
-        })
-        .then(function (data) {
-          window.location.href = 'games.html';
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "POST"
+      })
+        .then(function(data) {
+          window.location.href = "games.html";
           console.log("Request success: ", data);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log("Request failure: ", error);
         });
     },
 
     postShips() {
       fetch("/api/games/players/" + gpid + "/ships", {
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify([
+          {
+            shipType: "patrol boat",
+            location: ["A1", "B1", "C1"]
           },
-          method: "POST",
-          body: JSON.stringify([{
-              shipType: "patrol boat",
-              location: ["A1", "B1", "C1"]
-            },
-            {
-              shipType: "destroyer",
-              location: ["H5", "H6"]
-            }
-          ])
-        })
-        .then(function (response) {
+          {
+            shipType: "destroyer",
+            location: ["H5", "H6"]
+          }
+        ])
+      })
+        .then(function(response) {
           return response.json();
         })
-        .then(function (json) {
+        .then(function(json) {
           if (json.error) {
             alert(json.error);
           } else {
             alert(json.success);
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log("Request failure: ", error);
         });
     },
@@ -170,33 +172,93 @@ var app = new Vue({
       }
     },
 
+    orientation(direction) {
+      if (direction == "vertical") {
+        this.vertical = true;
+        this.horizontal = false;
+      } else if (direction == "horizontal") {
+        this.vertical = false;
+        this.horizontal = true;
+      }
+    },
+
     highlightPreLocation(shipLength) {
-      console.log(shipLength);
+      var cells = document.querySelectorAll(".hostGridTD"); // select all cells
+      cells.forEach(function(cell) {
+        // for each cell allow mouseover function
+        cell.onmouseover = function(event) {
+          var cellID = event.target.id; // gets cell ID and slice
+          var letterID = cellID.slice(0, 1);
+          var numberID = cellID.slice(1, 3);
+          var shipLocations = [];
 
-      var cells = document.querySelectorAll(".hostGridTD");
-      cells.forEach(function (cell) {
-        var cellID = cell.id;
-        cellID.slice(1);
-        console.log(cellID);
+          // this loop creates extra cells
+          for (var i = 0; i < shipLength; i++) {
+            var cell;
+            if (this.horizontal) {
+              cell = letterID + (parseInt(numberID) + parseInt(i));
+            } else if (this.vertical) {
+              cell = this.rowName[parseInt(numberID) + parseInt(i)] + numberID;
+            }
+            shipLocations.push(cell); // put locations in array to check if more than 10 (ie off-grid)
 
-      });
+            // if off-grid
+            if (parseInt(numberID) + parseInt(i) > 10) {
+              this.wrongPlace = true;
+            }
 
-      // highlights cells under mouse
-      tableHost.onmouseover = function (event) {
-        let target = event.target.closest('td');
-        target.style.background = 'pink';
-        console.log()
-      };
-      tableHost.onmouseout = function (event) {
-        let target = event.target.closest('td');
-        target.style.background = '';
-      };
+            // if in-grid and contains ship
+            if (
+              document.getElementById(
+                letterID + (parseInt(numberID) + parseInt(i))
+              ) &&
+              parseInt(numberID) + parseInt(i) < 10
+            ) {
+              if (
+                document
+                  .getElementById(letterID + (parseInt(numberID) + parseInt(i)))
+                  .classList.contains("shipLocation")
+              ) {
+                this.existingShip = true;
+              }
+            }
+          }
 
-      tableHost.addEventListener("click", function (event) {
-        if (event.target && event.target.nodeName == "TD") {
-          var cell = document.getElementById("id");
-          console.log(cell);
-        }
+          // this loop changes the color of all cells
+          for (let j = 0; j < shipLocations.length; j++) {
+            var shipHorizontal = document.getElementById(
+              letterID + (parseInt(numberID) + parseInt(j)) // loop thru all locations to get index and add to ID
+            );
+
+            if (!this.wrongPlace) {
+              shipHorizontal.style.background = "pink"; // if < 10 = pink
+            }
+            if (this.wrongPlace && shipHorizontal) {
+              shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
+            }
+            if (this.existingShip) {
+              shipHorizontal.style.background = "red"; // if there's ship = red
+            }
+          }
+          console.log(shipLocations);
+        };
+
+        cell.onmouseout = function(event) {
+          // mouseout of the same cells as above
+          var cellID = event.target.id;
+          var letterID = cellID.slice(0, 1);
+          var numberID = cellID.slice(1, 3);
+
+          for (var i = 0; i < shipLength; i++) {
+            var shipHorizontal = document.getElementById(
+              letterID + (parseInt(numberID) + parseInt(i))
+            );
+
+            if (shipHorizontal) {
+              shipHorizontal.style.background = ""; // if same ship cells, mouseout
+            }
+          }
+        };
       });
     },
 
@@ -214,8 +276,10 @@ var app = new Vue({
     },
 
     getSalvoLocation() {
-      for (var keyID in this.salvoes) { // displays players ID
-        for (var keyTurn in this.salvoes[keyID]) { // Displays turn
+      for (var keyID in this.salvoes) {
+        // displays players ID
+        for (var keyTurn in this.salvoes[keyID]) {
+          // Displays turn
           var turn = this.salvoes[keyID][keyTurn]; // display turn number
           console.log(turn);
           for (var salvo in turn) {
@@ -225,8 +289,10 @@ var app = new Vue({
               hostSalvoes.classList.add("hostSalvoes");
               hostSalvoes.textContent = keyTurn;
             } else {
-              for (var i = 0; i < this.ships.length; i++) { // loop thru each ship
-                if (this.ships[i].locations.includes(salvoLocation)) { // if ship location has salvoLocation
+              for (var i = 0; i < this.ships.length; i++) {
+                // loop thru each ship
+                if (this.ships[i].locations.includes(salvoLocation)) {
+                  // if ship location has salvoLocation
                   var opponentSalvoes = document.getElementById(salvoLocation); // add salvoLocation to grid element
                   opponentSalvoes.classList.add("opponentSalvoes"); // add class for CSS
                   opponentSalvoes.textContent = keyTurn;
@@ -236,13 +302,12 @@ var app = new Vue({
           }
         }
       }
-    },
+    }
   },
 
   created() {
     this.getGamePlayerID(); // need to create api first to be able to do fetch
     this.fetchData(); // once api created, then fetch data
-
   },
 
   updated() {}
