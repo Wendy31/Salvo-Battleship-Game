@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api") // avoids URL name conflicts
 public class SalvoController {
 
-    @Autowired // autowired creates and istance of a class, to be used in another class.
+    @Autowired // autowired creates and instance of a class, to be used in another class.
     private PlayerRepository playerRepository;
     @Autowired
     private GameRepository gameRepo;

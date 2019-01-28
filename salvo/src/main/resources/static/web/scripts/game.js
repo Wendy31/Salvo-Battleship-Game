@@ -173,6 +173,7 @@ var app = new Vue({
     },
 
     orientation(direction) {
+      // if these buttons are clicked, changes the state of variable
       if (direction == "vertical") {
         this.vertical = true;
         this.horizontal = false;
@@ -191,20 +192,23 @@ var app = new Vue({
           var letterID = cellID.slice(0, 1);
           var numberID = cellID.slice(1, 3);
           var shipLocations = [];
+          var letterPos = app.rowName.indexOf(letterID);
 
           // this loop creates extra cells
           for (var i = 0; i < shipLength; i++) {
-            var cell;
-            if (this.horizontal) {
-              cell = letterID + (parseInt(numberID) + parseInt(i));
-            } else if (this.vertical) {
-              cell = this.rowName[parseInt(numberID) + parseInt(i)] + numberID;
+            var cellBox;
+            if (app.horizontal) {
+              cellBox = letterID + (parseInt(numberID) + parseInt(i));
             }
-            shipLocations.push(cell); // put locations in array to check if more than 10 (ie off-grid)
+            if (app.vertical) {
+              cellBox =
+                app.rowName[parseInt(letterPos) + parseInt(i)] + numberID;
+            }
+            shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
 
             // if off-grid
             if (parseInt(numberID) + parseInt(i) > 10) {
-              this.wrongPlace = true;
+              app.wrongPlace = true;
             }
 
             // if in-grid and contains ship
@@ -226,18 +230,33 @@ var app = new Vue({
 
           // this loop changes the color of all cells
           for (let j = 0; j < shipLocations.length; j++) {
-            var shipHorizontal = document.getElementById(
-              letterID + (parseInt(numberID) + parseInt(j)) // loop thru all locations to get index and add to ID
-            );
-
-            if (!this.wrongPlace) {
-              shipHorizontal.style.background = "pink"; // if < 10 = pink
+            if (app.horizontal) {
+              var shipHorizontal = document.getElementById(
+                letterID + (parseInt(numberID) + parseInt(j)) // loop thru all locations to get index and add to ID
+              );
+              if (!app.wrongPlace) {
+                shipHorizontal.style.background = "pink"; // if < 10 = pink
+              }
+              if (app.wrongPlace && shipHorizontal) {
+                shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
+              }
+              if (app.existingShip) {
+                shipHorizontal.style.background = "red"; // if there's ship = red
+              }
             }
-            if (this.wrongPlace && shipHorizontal) {
-              shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
-            }
-            if (this.existingShip) {
-              shipHorizontal.style.background = "red"; // if there's ship = red
+            if (app.vertical) {
+              var shipVertical = document.getElementById(
+                app.rowName[parseInt(letterPos) + parseInt(j)] + numberID // loop thru all locations to get index and add to ID
+              );
+              if (!app.wrongPlace) {
+                shipVertical.style.background = "pink"; // if < 10 = pink
+              }
+              if (app.wrongPlace && shipVertical) {
+                shipVertical.style.background = "red"; // if > 10 && has ship IDs = red
+              }
+              if (app.existingShip) {
+                shipVertical.style.background = "red"; // if there's ship = red
+              }
             }
           }
           console.log(shipLocations);
@@ -245,17 +264,26 @@ var app = new Vue({
 
         cell.onmouseout = function(event) {
           // mouseout of the same cells as above
-          var cellID = event.target.id;
+          var cellID = event.target.id; // gets cell ID and slice
           var letterID = cellID.slice(0, 1);
           var numberID = cellID.slice(1, 3);
+          var shipLocations = [];
+          var letterPos = app.rowName.indexOf(letterID);
 
           for (var i = 0; i < shipLength; i++) {
             var shipHorizontal = document.getElementById(
               letterID + (parseInt(numberID) + parseInt(i))
             );
+            var shipVertical = document.getElementById(
+              app.rowName[parseInt(letterPos) + parseInt(i)] + numberID // loop thru all locations to get index and add to ID
+            );
 
             if (shipHorizontal) {
               shipHorizontal.style.background = ""; // if same ship cells, mouseout
+            }
+
+            if (shipVertical) {
+              shipVertical.style.background = "";
             }
           }
         };
