@@ -51,10 +51,10 @@ var app = new Vue({
         // fectch data from controller
         method: "GET"
       })
-        .then(function(data) {
+        .then(function (data) {
           return data.json(); // makes it into a JSON object
         })
-        .then(function(myData) {
+        .then(function (myData) {
           if (myData.error) {
             alert(myData.error);
             history.back();
@@ -80,11 +80,11 @@ var app = new Vue({
         },
         method: "POST"
       })
-        .then(function(data) {
+        .then(function (data) {
           window.location.href = "games.html";
           console.log("Request success: ", data);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Request failure: ", error);
         });
     },
@@ -108,17 +108,17 @@ var app = new Vue({
           }
         ])
       })
-        .then(function(response) {
+        .then(function (response) {
           return response.json();
         })
-        .then(function(json) {
+        .then(function (json) {
           if (json.error) {
             alert(json.error);
           } else {
             alert(json.success);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Request failure: ", error);
         });
     },
@@ -172,26 +172,16 @@ var app = new Vue({
       }
     },
 
-    orientation(direction) {
-      // if these buttons are clicked, changes the state of variable
-      if (direction == "vertical") {
-        this.vertical = true;
-        this.horizontal = false;
-      } else if (direction == "horizontal") {
-        this.vertical = false;
-        this.horizontal = true;
-      }
-    },
-
     highlightPreLocation(shipLength) {
       var cells = document.querySelectorAll(".hostGridTD"); // select all cells
-      cells.forEach(function(cell) {
+      cells.forEach(function (cell) {
         // for each cell allow mouseover function
-        cell.onmouseover = function(event) {
+        cell.onmouseover = function (event) {
           var cellID = event.target.id; // gets cell ID and slice
           var letterID = cellID.slice(0, 1);
           var numberID = cellID.slice(1, 3);
           var shipLocations = [];
+          var shipOverlap = [];
           var letterPos = app.rowName.indexOf(letterID);
 
           // this loop creates extra cells
@@ -199,34 +189,63 @@ var app = new Vue({
             var cellBox;
             if (app.horizontal) {
               cellBox = letterID + (parseInt(numberID) + parseInt(i));
+
+              // if off-grid
+              if (parseInt(numberID) + parseInt(i) > 10) {
+                app.wrongPlace = true;
+              } else {
+                app.wrongPlace = false;
+              }
+
+              // if in-grid and contains ship
+              if (
+                document.getElementById(
+                  letterID + (parseInt(numberID) + parseInt(i))
+                ) &&
+                parseInt(numberID) + parseInt(i) < 10
+              ) {
+                if (
+                  document
+                    .getElementById(
+                      letterID + (parseInt(numberID) + parseInt(i))
+                    )
+                    .classList.contains("shipLocation")
+                ) {
+                  app.existingShip = true;
+                } else {
+                  app.existingShip = false;
+                }
+              }
             }
+
+            // vertical conditions
             if (app.vertical) {
               cellBox =
                 app.rowName[parseInt(letterPos) + parseInt(i)] + numberID;
-            }
-            shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
 
-            // if off-grid
-            if (parseInt(numberID) + parseInt(i) > 10) {
-              app.wrongPlace = true;
-            }
+              // if off-grid
+              if (!app.rowName[parseInt(letterPos) + parseInt(i)]) {
+                app.wrongPlace = true;
+              } else {
+                app.wrongPlace = false;
+              }
 
-            // if in-grid and contains ship
-            if (
-              document.getElementById(
-                letterID + (parseInt(numberID) + parseInt(i))
-              ) &&
-              parseInt(numberID) + parseInt(i) < 10
-            ) {
-              if (
-                document
-                  .getElementById(letterID + (parseInt(numberID) + parseInt(i)))
-                  .classList.contains("shipLocation")
-              ) {
-                this.existingShip = true;
+              // if in-grid and contains ship
+              if (document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) && app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) {
+                if (
+                  document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID)
+                    .classList.contains("shipLocation")
+                ) {
+                  app.existingShip = true;
+                } else {
+                  app.existingShip = false;
+                }
               }
             }
+            shipOverlap.push(app.existingShip)
+            shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
           }
+
 
           // this loop changes the color of all cells
           for (let j = 0; j < shipLocations.length; j++) {
@@ -244,6 +263,7 @@ var app = new Vue({
                 shipHorizontal.style.background = "red"; // if there's ship = red
               }
             }
+
             if (app.vertical) {
               var shipVertical = document.getElementById(
                 app.rowName[parseInt(letterPos) + parseInt(j)] + numberID // loop thru all locations to get index and add to ID
@@ -260,14 +280,14 @@ var app = new Vue({
             }
           }
           console.log(shipLocations);
+          console.log(shipOverlap);
         };
 
-        cell.onmouseout = function(event) {
+        cell.onmouseout = function (event) {
           // mouseout of the same cells as above
           var cellID = event.target.id; // gets cell ID and slice
           var letterID = cellID.slice(0, 1);
           var numberID = cellID.slice(1, 3);
-          var shipLocations = [];
           var letterPos = app.rowName.indexOf(letterID);
 
           for (var i = 0; i < shipLength; i++) {
@@ -288,6 +308,21 @@ var app = new Vue({
           }
         };
       });
+    },
+
+    orientation(direction) {
+      // if these buttons are clicked, changes the state of variable
+      if (direction == "vertical") {
+        this.vertical = true;
+        this.horizontal = false;
+      } else if (direction == "horizontal") {
+        this.vertical = false;
+        this.horizontal = true;
+      }
+    },
+
+    placeShip() {
+      this.highlightPreLocation(shipLength)
     },
 
     showGameAndPlayerInfoGV() {
@@ -338,5 +373,5 @@ var app = new Vue({
     this.fetchData(); // once api created, then fetch data
   },
 
-  updated() {}
+  updated() { }
 });
