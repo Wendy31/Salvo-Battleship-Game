@@ -50,46 +50,53 @@
             </table>
         </div>
 
-        <table class="shipKeyTable">
-            <tr>
-                <th>Number</th>
-                <th>Type</th>
-                <th>Length</th>
-            </tr>
-            <tr>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><button v-on:click="getLength('aircraft')"> Aircraft Carrier</button></td>
-                        <td>5</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><button v-on:click="getLength('battleship')">Battleship</button></td>
-                        <td>4</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><button v-on:click="getLength('submarine')">Submarine</button></td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><button v-on:click="getLength('destroyer')">Destroyer</button></td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><button v-on:click="getLength('patrol')">Patrol Boat</button></td>
-                        <td>2</td>
-                    </tr>
-                </tbody>
-            </tr>
-        </table>
+        <div class="controlBoxes">
+            <table class="shipKeyTable">
+                <tr>
+                    <th>Number</th>
+                    <th>Type</th>
+                    <th>Length</th>
+                </tr>
+                <tr>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><button v-on:click="getLength('aircraft')"> Aircraft Carrier</button></td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><button v-on:click="getLength('battleship')">Battleship</button></td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><button v-on:click="getLength('submarine')">Submarine</button></td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><button v-on:click="getLength('destroyer')">Destroyer</button></td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><button v-on:click="getLength('patrol')">Patrol Boat</button></td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </tr>
+            </table>
 
-        <h4>Set Orientation</h4>
-        <button v-on:click="orientation('horizontal')">Horizontal</button>
-        <button v-on:click="orientation('vertical')">Vertical</button>
+            <div class="orientationBox">
+                <h4>Set Orientation</h4>
+                <div class="orientationButtons">
+                    <button class="orientationButton" v-on:click="orientation('horizontal')">Horizontal</button>
+                    <button class="orientationButton" v-on:click="orientation('vertical')">Vertical</button>
+                </div>
+            </div>
+
+        </div>
 
 
     </div>

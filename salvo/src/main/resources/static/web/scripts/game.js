@@ -242,8 +242,9 @@ var app = new Vue({
                 }
               }
             }
-            shipOverlap.push(app.existingShip)
+            shipOverlap.push(app.existingShip) // pushed boolean values in array
             shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
+
           }
 
 
@@ -259,7 +260,7 @@ var app = new Vue({
               if (app.wrongPlace && shipHorizontal) {
                 shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
               }
-              if (app.existingShip) {
+              if (shipOverlap.includes(true) && shipHorizontal) { // if array has true AND has ID
                 shipHorizontal.style.background = "red"; // if there's ship = red
               }
             }
@@ -274,15 +275,17 @@ var app = new Vue({
               if (app.wrongPlace && shipVertical) {
                 shipVertical.style.background = "red"; // if > 10 && has ship IDs = red
               }
-              if (app.existingShip) {
+              if (shipOverlap.includes(true) && shipVertical) { // if array has true AND has ID
                 shipVertical.style.background = "red"; // if there's ship = red
               }
             }
           }
           console.log(shipLocations);
           console.log(shipOverlap);
+          cell.onclick = () => app.placeShip(shipLocations); // arrow function for onClick to invoke another function
         };
 
+        // when click, calls the function
         cell.onmouseout = function (event) {
           // mouseout of the same cells as above
           var cellID = event.target.id; // gets cell ID and slice
@@ -297,11 +300,9 @@ var app = new Vue({
             var shipVertical = document.getElementById(
               app.rowName[parseInt(letterPos) + parseInt(i)] + numberID // loop thru all locations to get index and add to ID
             );
-
             if (shipHorizontal) {
               shipHorizontal.style.background = ""; // if same ship cells, mouseout
             }
-
             if (shipVertical) {
               shipVertical.style.background = "";
             }
@@ -321,8 +322,13 @@ var app = new Vue({
       }
     },
 
-    placeShip() {
-      this.highlightPreLocation(shipLength)
+    placeShip(arrayLocation) {
+      console.log("hello");
+      for (var i = 0; i < arrayLocation.length; i++) {
+        var shipPlaced = arrayLocation[i];
+        var gridLocation = document.getElementById(shipPlaced);
+        gridLocation.classList.add("shipLocation");
+      }
     },
 
     showGameAndPlayerInfoGV() {
