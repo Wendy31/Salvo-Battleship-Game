@@ -16,6 +16,8 @@ var app = new Vue({
     existingShip: false,
     horizontal: true,
     vertical: false,
+    highlight: false,
+    isPlaceable: false,
     shipObj: [
       {
         shipType: "aircraft",
@@ -146,6 +148,7 @@ var app = new Vue({
     },
 
     getLength(shipType) {
+      this.highlight = true;
       switch (shipType) {
         case "aircraft": // if its aircraft run the function below and pass 5 thru
           this.highlightPreLocation(5);
@@ -177,112 +180,127 @@ var app = new Vue({
       cells.forEach(function (cell) {
         // for each cell allow mouseover function
         cell.onmouseover = function (event) {
-          var cellID = event.target.id; // gets cell ID and slice
-          var letterID = cellID.slice(0, 1);
-          var numberID = cellID.slice(1, 3);
-          var shipLocations = [];
-          var shipOverlap = [];
-          var letterPos = app.rowName.indexOf(letterID);
+          if (app.highlight) {
+            var cellID = event.target.id; // gets cell ID and slice
+            var letterID = cellID.slice(0, 1);
+            var numberID = cellID.slice(1, 3);
+            var shipLocations = [];
+            var shipOverlap = [];
+            var letterPos = app.rowName.indexOf(letterID);
 
-          // this loop creates extra cells
-          for (var i = 0; i < shipLength; i++) {
-            var cellBox;
-            if (app.horizontal) {
-              cellBox = letterID + (parseInt(numberID) + parseInt(i));
+            // this loop creates extra cells
+            for (var i = 0; i < shipLength; i++) {
+              var cellBox;
+              if (app.horizontal) {
+                cellBox = letterID + (parseInt(numberID) + parseInt(i));
 
-              // if off-grid
-              if (parseInt(numberID) + parseInt(i) > 10) {
-                app.wrongPlace = true;
-              } else {
-                app.wrongPlace = false;
+                // if off-grid
+                if (parseInt(numberID) + parseInt(i) > 10) {
+                  app.wrongPlace = true;
+                  app.isPlaceable = false;
+                } else {
+                  app.wrongPlace = false;
+                  app.isPlaceable = true;
+                }
+
+                // if in-grid and contains ship
+                if (
+                  document.getElementById(
+                    letterID + (parseInt(numberID) + parseInt(i))
+                  ) &&
+                  parseInt(numberID) + parseInt(i) < 10
+                ) {
+                  if (
+                    document
+                      .getElementById(
+                        letterID + (parseInt(numberID) + parseInt(i))
+                      )
+                      .classList.contains("shipLocation")
+                  ) {
+                    app.existingShip = true;
+                    app.isPlaceable = false;
+                  } else {
+                    app.existingShip = false;
+                    app.isPlaceable = true;
+                  }
+                }
               }
 
-              // if in-grid and contains ship
-              if (
-                document.getElementById(
-                  letterID + (parseInt(numberID) + parseInt(i))
-                ) &&
-                parseInt(numberID) + parseInt(i) < 10
-              ) {
-                if (
-                  document
-                    .getElementById(
-                      letterID + (parseInt(numberID) + parseInt(i))
-                    )
-                    .classList.contains("shipLocation")
-                ) {
-                  app.existingShip = true;
+              // vertical conditions
+              if (app.vertical) {
+                cellBox =
+                  app.rowName[parseInt(letterPos) + parseInt(i)] + numberID;
+
+                // if off-grid
+                if (!app.rowName[parseInt(letterPos) + parseInt(i)]) {
+                  app.wrongPlace = true;
+                  app.isPlaceable = false;
                 } else {
-                  app.existingShip = false;
+                  app.wrongPlace = false;
+                  app.isPlaceable = true;
+                }
+
+                // if in-grid and contains ship
+                if (document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) && app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) {
+                  if (
+                    document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID)
+                      .classList.contains("shipLocation")
+                  ) {
+                    app.existingShip = true;
+                    app.isPlaceable = false;
+                  } else {
+                    app.existingShip = false;
+                    app.isPlaceable = true;
+                  }
+                }
+              }
+              shipOverlap.push(app.existingShip) // pushed boolean values in array
+              shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
+
+            }
+
+
+            // this loop changes the color of all cells
+            for (let j = 0; j < shipLocations.length; j++) {
+              if (app.horizontal) {
+                var shipHorizontal = document.getElementById(
+                  letterID + (parseInt(numberID) + parseInt(j)) // loop thru all locations to get index and add to ID
+                );
+                if (!app.wrongPlace) {
+                  shipHorizontal.style.background = "pink"; // if < 10 = pink
+                }
+                if (app.wrongPlace && shipHorizontal) {
+                  shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
+                }
+                if (shipOverlap.includes(true) && shipHorizontal) { // if array has true AND has ID
+                  shipHorizontal.style.background = "red"; // if there's ship = red
+                  app.isPlaceable = false;
+                }
+              }
+
+              if (app.vertical) {
+                var shipVertical = document.getElementById(
+                  app.rowName[parseInt(letterPos) + parseInt(j)] + numberID // loop thru all locations to get index and add to ID
+                );
+                if (!app.wrongPlace) {
+                  shipVertical.style.background = "pink"; // if < 10 = pink
+                }
+                if (app.wrongPlace && shipVertical) {
+                  shipVertical.style.background = "red"; // if > 10 && has ship IDs = red
+                }
+                if (shipOverlap.includes(true) && shipVertical) { // if array has true AND has ID
+                  shipVertical.style.background = "red"; // if there's ship = red
+                  app.isPlaceable = false;
                 }
               }
             }
-
-            // vertical conditions
-            if (app.vertical) {
-              cellBox =
-                app.rowName[parseInt(letterPos) + parseInt(i)] + numberID;
-
-              // if off-grid
-              if (!app.rowName[parseInt(letterPos) + parseInt(i)]) {
-                app.wrongPlace = true;
-              } else {
-                app.wrongPlace = false;
-              }
-
-              // if in-grid and contains ship
-              if (document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) && app.rowName[parseInt(letterPos) + parseInt(i)] + numberID) {
-                if (
-                  document.getElementById(app.rowName[parseInt(letterPos) + parseInt(i)] + numberID)
-                    .classList.contains("shipLocation")
-                ) {
-                  app.existingShip = true;
-                } else {
-                  app.existingShip = false;
-                }
-              }
-            }
-            shipOverlap.push(app.existingShip) // pushed boolean values in array
-            shipLocations.push(cellBox); // put locations in array to check if more than 10 (ie off-grid)
-
+            console.log(shipLocations);
+            console.log(shipOverlap);
+            cell.onclick = () => { // arrow function for onClick to invoke another function
+              app.placeShip(shipLocations);
+              app.highlight = false;
+            };
           }
-
-
-          // this loop changes the color of all cells
-          for (let j = 0; j < shipLocations.length; j++) {
-            if (app.horizontal) {
-              var shipHorizontal = document.getElementById(
-                letterID + (parseInt(numberID) + parseInt(j)) // loop thru all locations to get index and add to ID
-              );
-              if (!app.wrongPlace) {
-                shipHorizontal.style.background = "pink"; // if < 10 = pink
-              }
-              if (app.wrongPlace && shipHorizontal) {
-                shipHorizontal.style.background = "red"; // if > 10 && has ship IDs = red
-              }
-              if (shipOverlap.includes(true) && shipHorizontal) { // if array has true AND has ID
-                shipHorizontal.style.background = "red"; // if there's ship = red
-              }
-            }
-
-            if (app.vertical) {
-              var shipVertical = document.getElementById(
-                app.rowName[parseInt(letterPos) + parseInt(j)] + numberID // loop thru all locations to get index and add to ID
-              );
-              if (!app.wrongPlace) {
-                shipVertical.style.background = "pink"; // if < 10 = pink
-              }
-              if (app.wrongPlace && shipVertical) {
-                shipVertical.style.background = "red"; // if > 10 && has ship IDs = red
-              }
-              if (shipOverlap.includes(true) && shipVertical) { // if array has true AND has ID
-                shipVertical.style.background = "red"; // if there's ship = red
-              }
-            }
-          }
-          console.log(shipLocations);
-          console.log(shipOverlap);
-          cell.onclick = () => app.placeShip(shipLocations); // arrow function for onClick to invoke another function
         };
 
         // when click, calls the function
@@ -323,11 +341,15 @@ var app = new Vue({
     },
 
     placeShip(arrayLocation) {
-      console.log("hello");
-      for (var i = 0; i < arrayLocation.length; i++) {
-        var shipPlaced = arrayLocation[i];
-        var gridLocation = document.getElementById(shipPlaced);
-        gridLocation.classList.add("shipLocation");
+      if (this.isPlaceable) {
+        console.log("ship placed");
+        for (var i = 0; i < arrayLocation.length; i++) {
+          var shipPlaced = arrayLocation[i];
+          var gridLocation = document.getElementById(shipPlaced);
+          gridLocation.classList.add("shipLocation");
+        }
+      } else {
+        alert("Invalid position!");
       }
     },
 
