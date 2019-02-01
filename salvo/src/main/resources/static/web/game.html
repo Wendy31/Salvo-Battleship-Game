@@ -61,27 +61,49 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><button v-on:click="getLength('aircraft')"> Aircraft Carrier</button></td>
+                            <td>
+                                <button id="clickAircraft" v-show="clickAircraft == true" v-on:click="getLength('aircraft')">
+                                    Aircraft
+                                    Carrier</button>
+                                <button id="undoAircraft" v-show="undoAircraft == true" v-on:click="undoShip('aircraft')">Undo
+                                    X</button>
+                            </td>
                             <td>5</td>
                         </tr>
                         <tr>
                             <td>1</td>
-                            <td><button v-on:click="getLength('battleship')">Battleship</button></td>
+                            <td>
+                                <button id="clickBattleship" v-show="clickBattleship == true" v-on:click="getLength('battleship')">Battleship</button>
+                                <button id="undoBattleship" v-show="undoBattleship == true" v-on:click="undoShip()">Undo
+                                    X</button>
+                            </td>
                             <td>4</td>
                         </tr>
                         <tr>
                             <td>1</td>
-                            <td><button v-on:click="getLength('submarine')">Submarine</button></td>
+                            <td>
+                                <button id="clickSubmarine" v-show="clickSubmarine == true" v-on:click="getLength('submarine')">Submarine</button>
+                                <button id="undoSubmarine" v-show="undoSubmarine == true" v-on:click="undoShip()">Undo
+                                    X</button>
+                            </td>
                             <td>3</td>
                         </tr>
                         <tr>
                             <td>1</td>
-                            <td><button v-on:click="getLength('destroyer')">Destroyer</button></td>
+                            <td>
+                                <button id="clickDestroyer" v-show="clickDestroyer == true" v-on:click="getLength('destroyer')">Destroyer</button>
+                                <button id="undoDestroyer" v-show="undoDestroyer == true" v-on:click="undoShip()">Undo
+                                    X</button>
+                            </td>
                             <td>3</td>
                         </tr>
                         <tr>
                             <td>1</td>
-                            <td><button v-on:click="getLength('patrol')">Patrol Boat</button></td>
+                            <td>
+                                <button id="clickPatrol" v-show="clickPatrol == true" v-on:click="getLength('patrol')">Patrol
+                                    Boat</button>
+                                <button id="undoPatrol" v-show="undoPatrol == true" v-on:click="undoShip()">Undo X</button>
+                            </td>
                             <td>2</td>
                         </tr>
                     </tbody>
@@ -95,6 +117,9 @@
                     <button class="orientationButton" v-on:click="orientation('vertical')">Vertical</button>
                 </div>
             </div>
+
+            <button class="orientationButton" v-on:click="postShips()">Place your ships!</button>
+
 
         </div>
 

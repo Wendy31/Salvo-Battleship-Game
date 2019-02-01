@@ -18,6 +18,17 @@ var app = new Vue({
     vertical: false,
     highlight: false,
     isPlaceable: false,
+    shipSelected: "",
+    clickAircraft: true,
+    undoAircraft: false,
+    clickBattleship: true,
+    undoBattleship: false,
+    clickSubmarine: true,
+    undoSubmarine: false,
+    clickDestroyer: true,
+    undoDestroyer: false,
+    clickPatrol: true,
+    undoPatrol: false,
     shipObj: [
       {
         shipType: "aircraft",
@@ -92,37 +103,34 @@ var app = new Vue({
     },
 
     postShips() {
-      fetch("/api/games/players/" + gpid + "/ships", {
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify([
-          {
-            shipType: "patrol boat",
-            location: ["A1", "B1", "C1"]
-          },
-          {
-            shipType: "destroyer",
-            location: ["H5", "H6"]
-          }
-        ])
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (json) {
-          if (json.error) {
-            alert(json.error);
-          } else {
-            alert(json.success);
-          }
-        })
-        .catch(function (error) {
-          console.log("Request failure: ", error);
-        });
+      for (var i = 0; i < this.shipObj.length; i++) {
+        if (app.shipObj[i].location !== null) {
+          fetch("/api/games/players/" + gpid + "/ships", {
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(app.shipObj)
+          })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (json) {
+              if (json.error) {
+                alert(json.error);
+              } else {
+                alert(json.success);
+              }
+            })
+            .catch(function (error) {
+              console.log("Request failure: ", error);
+            });
+        } else {
+          alert("You need 5 ships to play");
+        }
+      }
     },
 
     getGamePlayerID() {
@@ -148,26 +156,37 @@ var app = new Vue({
     },
 
     getLength(shipType) {
+      this.shipSelected = shipType;
       this.highlight = true;
-      switch (shipType) {
+      switch (this.shipSelected) {
         case "aircraft": // if its aircraft run the function below and pass 5 thru
           this.highlightPreLocation(5);
+          this.clickAircraft = false;
+          this.undoAircraft = true;
           break;
 
         case "battleship":
           this.highlightPreLocation(4);
+          this.clickBattleship = false;
+          this.undoBattleship = true;
           break;
 
         case "submarine":
           this.highlightPreLocation(3);
+          this.clickSubmarine = false;
+          this.undoSubmarine = true;
           break;
 
         case "destroyer":
           this.highlightPreLocation(3);
+          this.clickDestroyer = false;
+          this.undoDestroyer = true;
           break;
 
         case "patrol":
           this.highlightPreLocation(2);
+          this.clickPatrol = false;
+          this.undoPatrol = true;
           break;
 
         default:
@@ -298,7 +317,12 @@ var app = new Vue({
             console.log(shipOverlap);
             cell.onclick = () => { // arrow function for onClick to invoke another function
               app.placeShip(shipLocations);
+              app.shipObj.find(ship => ship.shipType == app.shipSelected).location = shipLocations; // finds value in array
               app.highlight = false;
+
+
+
+              // DO SOMETHING!
             };
           }
         };
@@ -350,6 +374,20 @@ var app = new Vue({
         }
       } else {
         alert("Invalid position!");
+      }
+    },
+
+    undoShip() {
+      for (var i = 0; i < this.shipObj.length; i++) {
+        if (this.shipObj[i].shipType == this.shipSelected) {
+          this.shipObj[i].location.forEach(loc => { // for each loc "H1"
+            console.log(loc);
+            var gridLocation = document.getElementById(loc); // find el by id "H1"
+            gridLocation.classList.remove("shipLocation");
+          })
+          // this.isClicked = true;
+          // this.isUndo = false;
+        }
       }
     },
 
