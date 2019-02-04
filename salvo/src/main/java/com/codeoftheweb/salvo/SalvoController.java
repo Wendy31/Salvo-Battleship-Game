@@ -29,6 +29,8 @@ public class SalvoController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ShipRepository shipRepository;
+    @Autowired
+    private SalvoRepository salvoRepository;
 
 
     //..................................Game Info....................................//
@@ -253,6 +255,34 @@ public class SalvoController {
             shipRepository.save(new Ship(ship.getShipType(), ship.getLocation(), gamePlayer));
         }
         return new ResponseEntity<>(makeMap("success", "ships placed"), HttpStatus.CREATED);
+    }
+
+
+    //............................salvoes and locations to GP and salvoRepo..................................//
+    @RequestMapping(value = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long gamePlayerId, @RequestBody Set<Salvo> salvoes, Authentication authentication) {
+
+        Player loggedPlayer = playerRepository.findByUserName(authentication.getName());
+        GamePlayer gamePlayer = gamePlayerRepo.getOne(gamePlayerId);
+
+        if (isGuest(authentication)) { // if user not logged in
+            return new ResponseEntity<>(makeMap("error", "You are not logged in."), HttpStatus.UNAUTHORIZED);
+
+        } else if (gamePlayer == null) { // if no gamePlayer with the given ID
+            return new ResponseEntity<>(makeMap("error", "No such game player."), HttpStatus.UNAUTHORIZED);
+
+        } else if (!loggedPlayer.getId().equals(gamePlayer.getPlayer().getId())) { // if logged in player does NOT equal gamePlayer's player ID
+            return new ResponseEntity<>(makeMap("error", "No such game player."), HttpStatus.UNAUTHORIZED);
+
+        } else if (!gamePlayer.getSalvoes().isEmpty()) { // if user already has salvoes
+            return new ResponseEntity<>(makeMap("error", "You have salvoes placed already."), HttpStatus.FORBIDDEN);
+        }
+
+        for (Salvo salvo : salvoes) { // loop thru a set of ships. For each ship, add to gamePlayer and save to shipRepo with 3 params (as per the constructor)
+            gamePlayer.addSalvo(salvo);
+            salvoRepository.save(new Salvo(salvo.getTurn(), salvo.getLocation(), gamePlayer));
+        }
+        return new ResponseEntity<>(makeMap("success", "salvoes placed"), HttpStatus.CREATED);
     }
 
 }
