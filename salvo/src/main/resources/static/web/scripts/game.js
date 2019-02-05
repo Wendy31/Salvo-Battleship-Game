@@ -55,8 +55,7 @@ var app = new Vue({
 
   methods: {
     fetchData() {
-      fetch(this.apiGameView, {
-        // fectch data from controller
+      fetch(this.apiGameView, { // fectch data from controller
         method: "GET"
       })
         .then(function (data) {
@@ -135,6 +134,35 @@ var app = new Vue({
       }
     },
 
+    postSalvoes() {
+      fetch("/api/games/players/" + app.playerIdNumber + "/salvoes", {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify
+          ({
+            turn: "1",
+            location: ["A1", "B5", "C2"]
+          })
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (json) {
+          if (json.error) {
+            alert(json.error);
+          } else {
+            alert(json.success);
+          }
+        })
+        .catch(function (error) {
+          console.log("Request failure: ", error);
+        });
+    },
+
     getGamePlayerID() {
       var url = new URL(window.location.href); // new = new object contrsuctor called URL, which is the current URL. Window.location.href returns the href (URL) of the current page (e.g http://localhost:8080/web/game.html?gp=)
       console.log(url);
@@ -146,6 +174,7 @@ var app = new Vue({
       console.log(this.apiGameView);
     },
 
+    //...................................SHIPS......................................//
     getShipLocation() {
       for (var i = 0; i < this.ships.length; i++) {
         for (var j = 0; j < this.ships[i].locations.length; j++) {
@@ -400,6 +429,21 @@ var app = new Vue({
         }
       }
     },
+
+    //...................................SALVOES......................................//
+    highlightSalvoPreLoc() {
+      var cells = document.querySelectorAll(".gridTD"); // select all cells
+      cells.forEach(function (cell) {
+        cell.onmouseover = function (event) {
+        }
+
+        cell.onmouseout = function (event) {
+
+        }
+      })
+    },
+
+
 
     getSalvoLocation() {
       for (var keyID in this.salvoes) {

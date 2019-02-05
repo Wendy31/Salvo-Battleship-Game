@@ -21,14 +21,14 @@ public class Salvo {
     @Column(name = "salvoLocation")
     private List<String> location;
 
-    private String turn;
+    private Integer turn;
 
 
     // constructor
     public Salvo() {
     }
 
-    public Salvo(String turn, List<String> location, GamePlayer gamePlayer) {
+    public Salvo(Integer turn, List<String> location, GamePlayer gamePlayer) {
         this.turn = turn;
         this.location = location;
         this.gamePlayer = gamePlayer;
@@ -57,11 +57,11 @@ public class Salvo {
         this.location = location;
     }
 
-    public String getTurn() {
+    public Integer getTurn() {
         return turn;
     }
 
-    public void setTurn(String turn) {
+    public void setTurn(Integer turn) {
         this.turn = turn;
     }
 

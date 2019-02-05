@@ -28,7 +28,6 @@ public class GamePlayer {
     private Set<Ship> ships = new HashSet<>();
 
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
-    // Ship object stored in another data table, JPA connects tables together
     private Set<Salvo> salvoes = new HashSet<>();
 
     private Date date;
@@ -101,6 +100,17 @@ public class GamePlayer {
 
     public void addSalvo(Salvo salvo) {
         salvoes.add(salvo); // add one salvo to list of salvos (variable) at a time
+    }
+
+    public Integer getMostRecentTurn(){
+        if (!getSalvoes().isEmpty()){
+            return salvoes.stream()
+                    .map(salvo -> salvo.getTurn())
+                    .max((x, y) -> Integer.compare(x,y))
+                    .get();
+        } else {
+            return 0;
+        }
     }
 
     @Override

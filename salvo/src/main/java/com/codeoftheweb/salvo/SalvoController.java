@@ -139,11 +139,11 @@ public class SalvoController {
         for (Salvo salvo : salvos) { // loop thru all salvo in salvoes
             if (!getSalvoInfo.containsKey(salvo.getGamePlayer().getId())) { // if main map does not contain key ID
                 salvoTurnAndLocation = new HashMap<>(); // make new map
-                salvoTurnAndLocation.put(salvo.getTurn(), salvo.getLocation()); // put Turn as key, Location as value
+                salvoTurnAndLocation.put(salvo.getTurn().toString(), salvo.getLocation()); // put Turn as key, Location as value
                 getSalvoInfo.put(salvo.getGamePlayer().getId(), salvoTurnAndLocation); // and put main map with key ID, and turn/location as value
             } else { // else if map has id of first player, salvoTurnAndLocation-Map becomes main Map with opponent ID
                 salvoTurnAndLocation = getSalvoInfo.get(salvo.getGamePlayer().getId());
-                salvoTurnAndLocation.put(salvo.getTurn(), salvo.getLocation()); // with Opponent turn/ location info
+                salvoTurnAndLocation.put(salvo.getTurn().toString(), salvo.getLocation()); // with Opponent turn/ location info
             }
         }
         return getSalvoInfo;
@@ -260,7 +260,7 @@ public class SalvoController {
 
     //............................salvoes and locations to GP and salvoRepo..................................//
     @RequestMapping(value = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long gamePlayerId, @RequestBody Set<Salvo> salvoes, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
 
         Player loggedPlayer = playerRepository.findByUserName(authentication.getName());
         GamePlayer gamePlayer = gamePlayerRepo.getOne(gamePlayerId);
@@ -276,13 +276,12 @@ public class SalvoController {
 
         } else if (!gamePlayer.getSalvoes().isEmpty()) { // if user already has salvoes
             return new ResponseEntity<>(makeMap("error", "You have salvoes placed already."), HttpStatus.FORBIDDEN);
-        }
 
-        for (Salvo salvo : salvoes) { // loop thru a set of ships. For each ship, add to gamePlayer and save to shipRepo with 3 params (as per the constructor)
+        } else {
             gamePlayer.addSalvo(salvo);
-            salvoRepository.save(new Salvo(salvo.getTurn(), salvo.getLocation(), gamePlayer));
+            salvoRepository.save(new Salvo(gamePlayer.getMostRecentTurn() + 1, salvo.getLocation(), gamePlayer)); // For each salvo, add to gamePlayer and save to salvoRepo with 3 params (as per the constructor)
+            return new ResponseEntity<>(makeMap("success", "salvoes placed"), HttpStatus.CREATED); // save new Salvo (the most recent turn, location, and gamePLayer)
         }
-        return new ResponseEntity<>(makeMap("success", "salvoes placed"), HttpStatus.CREATED);
     }
 
 }
