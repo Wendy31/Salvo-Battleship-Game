@@ -209,35 +209,35 @@ public class SalvoApplication {
 
             // ......................create salvoes.......................//
             //.... game one ....//
-            Salvo salvo1 = new Salvo("1", new ArrayList<>(Arrays.asList("B5", "C5", "F1")), gp1);
-            Salvo salvo2 = new Salvo("1", new ArrayList<>(Arrays.asList("B4", "B5", "B6")), gp2);
-            Salvo salvo3 = new Salvo("2", new ArrayList<>(Arrays.asList("F2", "D5")), gp1);
-            Salvo salvo4 = new Salvo("2", new ArrayList<>(Arrays.asList("E1", "H3", "A2")), gp2);
+            Salvo salvo1 = new Salvo(1, new ArrayList<>(Arrays.asList("B5", "C5", "F1")), gp1);
+            Salvo salvo2 = new Salvo(1, new ArrayList<>(Arrays.asList("B4", "B5", "B6")), gp2);
+            Salvo salvo3 = new Salvo(2, new ArrayList<>(Arrays.asList("F2", "D5")), gp1);
+            Salvo salvo4 = new Salvo(2, new ArrayList<>(Arrays.asList("E1", "H3", "A2")), gp2);
 
             //.... game two ....//
-            Salvo salvo5 = new Salvo("1", new ArrayList<>(Arrays.asList("A2", "A4", "G6")), gp3);
-            Salvo salvo6 = new Salvo("1", new ArrayList<>(Arrays.asList("B5", "D5", "C7")), gp4);
-            Salvo salvo7 = new Salvo("2", new ArrayList<>(Arrays.asList("A3", "H6")), gp3);
-            Salvo salvo8 = new Salvo("2", new ArrayList<>(Arrays.asList("C5", "C6")), gp4);
+            Salvo salvo5 = new Salvo(1, new ArrayList<>(Arrays.asList("A2", "A4", "G6")), gp3);
+            Salvo salvo6 = new Salvo(1, new ArrayList<>(Arrays.asList("B5", "D5", "C7")), gp4);
+            Salvo salvo7 = new Salvo(2, new ArrayList<>(Arrays.asList("A3", "H6")), gp3);
+            Salvo salvo8 = new Salvo(2, new ArrayList<>(Arrays.asList("C5", "C6")), gp4);
 
             //.... game three ....//
-            Salvo salvo9 = new Salvo("1", new ArrayList<>(Arrays.asList("G6", "H6", "A4")), gp5);
-            Salvo salvo10 = new Salvo("1", new ArrayList<>(Arrays.asList("H1", "H2", "H3")), gp6);
-            Salvo salvo11 = new Salvo("2", new ArrayList<>(Arrays.asList("A2", "A3", "D8")), gp5);
-            Salvo salvo12 = new Salvo("2", new ArrayList<>(Arrays.asList("E1", "F2", "G3")), gp6);
+            Salvo salvo9 = new Salvo(1, new ArrayList<>(Arrays.asList("G6", "H6", "A4")), gp5);
+            Salvo salvo10 = new Salvo(1, new ArrayList<>(Arrays.asList("H1", "H2", "H3")), gp6);
+            Salvo salvo11 = new Salvo(2, new ArrayList<>(Arrays.asList("A2", "A3", "D8")), gp5);
+            Salvo salvo12 = new Salvo(2, new ArrayList<>(Arrays.asList("E1", "F2", "G3")), gp6);
 
             //.... game four ....//
-            Salvo salvo13 = new Salvo("1", new ArrayList<>(Arrays.asList("A3", "A4", "F7")), gp7);
-            Salvo salvo14 = new Salvo("1", new ArrayList<>(Arrays.asList("B5", "C6", "H1")), gp8);
-            Salvo salvo15 = new Salvo("2", new ArrayList<>(Arrays.asList("A2", "G6", "H6")), gp7);
-            Salvo salvo16 = new Salvo("2", new ArrayList<>(Arrays.asList("C5", "C7", "D5")), gp8);
+            Salvo salvo13 = new Salvo(1, new ArrayList<>(Arrays.asList("A3", "A4", "F7")), gp7);
+            Salvo salvo14 = new Salvo(1, new ArrayList<>(Arrays.asList("B5", "C6", "H1")), gp8);
+            Salvo salvo15 = new Salvo(2, new ArrayList<>(Arrays.asList("A2", "G6", "H6")), gp7);
+            Salvo salvo16 = new Salvo(2, new ArrayList<>(Arrays.asList("C5", "C7", "D5")), gp8);
 
             //.... game five ....//
-            Salvo salvo17 = new Salvo("1", new ArrayList<>(Arrays.asList("A1", "A2", "A3")), gp9);
-            Salvo salvo18 = new Salvo("1", new ArrayList<>(Arrays.asList("B5", "B6", "C7")), gp10);
-            Salvo salvo19 = new Salvo("2", new ArrayList<>(Arrays.asList("G6", "G7", "G8")), gp9);
-            Salvo salvo20 = new Salvo("2", new ArrayList<>(Arrays.asList("C6", "D6", "E6")), gp10);
-            Salvo salvo21 = new Salvo("3", new ArrayList<>(Arrays.asList("H1", "H8")), gp10);
+            Salvo salvo17 = new Salvo(1, new ArrayList<>(Arrays.asList("A1", "A2", "A3")), gp9);
+            Salvo salvo18 = new Salvo(1, new ArrayList<>(Arrays.asList("B5", "B6", "C7")), gp10);
+            Salvo salvo19 = new Salvo(2, new ArrayList<>(Arrays.asList("G6", "G7", "G8")), gp9);
+            Salvo salvo20 = new Salvo(2, new ArrayList<>(Arrays.asList("C6", "D6", "E6")), gp10);
+            Salvo salvo21 = new Salvo(3, new ArrayList<>(Arrays.asList("H1", "H8")), gp10);
 
             salvoRepository.save(salvo1);
             salvoRepository.save(salvo2);

@@ -24,6 +24,9 @@ var app = new Vue({
     clicksubmarine: true,
     clickdestroyer: true,
     clickpatrol: true,
+    salvoIsPlaceable: true,
+    has5salvoes: false,
+    salvoArray: [],
     shipObj: [
       {
         shipType: "aircraft",
@@ -50,7 +53,7 @@ var app = new Vue({
         location: [],
         length: "2"
       }
-    ]
+    ],
   },
 
   methods: {
@@ -75,6 +78,7 @@ var app = new Vue({
             app.salvoes = myData.salvoes;
             console.log(app.salvoes);
             app.getSalvoLocation();
+            app.highlightSalvoPreLoc();
           }
         });
     },
@@ -135,34 +139,39 @@ var app = new Vue({
     },
 
     postSalvoes() {
-      fetch("/api/games/players/" + app.playerIdNumber + "/salvoes", {
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify
-          ({
-            turn: "1",
-            location: ["A1", "B5", "C2"]
+      if (this.has5salvoes) {
+        fetch("/api/games/players/" + app.playerIdNumber + "/salvoes", {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify
+            ({
+              turn: "1",
+              location: ["A1", "B5", "C2"]
+            })
+        })
+          .then(function (response) {
+            return response.json();
           })
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (json) {
-          if (json.error) {
-            alert(json.error);
-          } else {
-            alert(json.success);
-          }
-        })
-        .catch(function (error) {
-          console.log("Request failure: ", error);
-        });
+          .then(function (json) {
+            if (json.error) {
+              alert(json.error);
+            } else {
+              alert(json.success);
+            }
+          })
+          .catch(function (error) {
+            console.log("Request failure: ", error);
+          });
+      } else {
+        alert("You have 5 shots. USE THEM!");
+      }
     },
 
+    //.......................................OTHER FUNCTIONS.......................................//
     getGamePlayerID() {
       var url = new URL(window.location.href); // new = new object contrsuctor called URL, which is the current URL. Window.location.href returns the href (URL) of the current page (e.g http://localhost:8080/web/game.html?gp=)
       console.log(url);
@@ -173,6 +182,20 @@ var app = new Vue({
 
       console.log(this.apiGameView);
     },
+
+    showGameAndPlayerInfoGV() {
+      for (var i = 0; i < this.gamesViewData.gamePlayers.length; i++) {
+        var gameViewPlayers = this.gamesViewData.gamePlayers[i].player.email;
+        console.log(gameViewPlayers);
+        console.log(this.gamesViewData.gamePlayers[i].id);
+        if (this.playerIdNumber == this.gamesViewData.gamePlayers[i].id) {
+          this.currentPlayer = gameViewPlayers;
+        } else {
+          this.opponentPlayer = gameViewPlayers;
+        }
+      }
+    },
+
 
     //...................................SHIPS......................................//
     getShipLocation() {
@@ -250,12 +273,8 @@ var app = new Vue({
                   ) &&
                   parseInt(numberID) + parseInt(i) < 10
                 ) {
-                  if (
-                    document
-                      .getElementById(
-                        letterID + (parseInt(numberID) + parseInt(i))
-                      )
-                      .classList.contains("shipLocation")
+                  if (document.getElementById(letterID + (parseInt(numberID) + parseInt(i)))
+                    .classList.contains("shipLocation")
                   ) {
                     app.existingShip = true;
                     app.isPlaceable = false;
@@ -417,33 +436,53 @@ var app = new Vue({
       }
     },
 
-    showGameAndPlayerInfoGV() {
-      for (var i = 0; i < this.gamesViewData.gamePlayers.length; i++) {
-        var gameViewPlayers = this.gamesViewData.gamePlayers[i].player.email;
-        console.log(gameViewPlayers);
-        console.log(this.gamesViewData.gamePlayers[i].id);
-        if (this.playerIdNumber == this.gamesViewData.gamePlayers[i].id) {
-          this.currentPlayer = gameViewPlayers;
-        } else {
-          this.opponentPlayer = gameViewPlayers;
-        }
-      }
-    },
 
     //...................................SALVOES......................................//
     highlightSalvoPreLoc() {
-      var cells = document.querySelectorAll(".gridTD"); // select all cells
-      cells.forEach(function (cell) {
-        cell.onmouseover = function (event) {
+      var cells = document.querySelectorAll(".gridTD"); // select all grid cells
+      cells.forEach(cell => {
+        cell.onmouseover = (event) => {
+          var cellID = event.target.id;
+          if (document.getElementById(cellID).classList.contains("hostSalvoes")) {
+            this.salvoIsPlaceable = false;
+          } else {
+            this.salvoIsPlaceable = true;
+          }
+          if (this.salvoIsPlaceable) {
+            var salvoBox = document.getElementById(cellID);
+            salvoBox.style.background = "orange";
+          }
         }
 
-        cell.onmouseout = function (event) {
+        cell.onclick = (event) => {
+          var cell = event.target.id;
+          for (var i = 0; i < this.salvoArray.length; i++) {
+            if (this.salvoArray.length == 5) {
+              this.has5salvoes = true;
+            }
+          }
+          if (this.has5salvoes == false) {
+            if (this.salvoArray.indexOf(cell) == -1) {
+              var hostSalvoes = document.getElementById(cell);
+              hostSalvoes.classList.add("hostSalvoes");
+              this.salvoArray.push(cell);
+              console.log(this.salvoArray);
+            } else {
+              this.salvoArray.splice(this.salvoArray.indexOf(cell), 1);
+              console.log(this.salvoArray);
+              var hostSalvoes = document.getElementById(cell);
+              hostSalvoes.classList.remove("hostSalvoes");
+            }
+          }
+        }
 
+        cell.onmouseout = (event) => {
+          var cellID = event.target.id;
+          var salvoBox = document.getElementById(cellID);
+          salvoBox.style.background = "";
         }
       })
     },
-
-
 
     getSalvoLocation() {
       for (var keyID in this.salvoes) {
@@ -454,6 +493,7 @@ var app = new Vue({
           console.log(turn);
           for (var salvo in turn) {
             var salvoLocation = turn[salvo]; // locations of salvoes
+            console.log(salvoLocation);
             if (keyID == this.playerIdNumber) {
               var hostSalvoes = document.getElementById(salvoLocation + "opp");
               hostSalvoes.classList.add("hostSalvoes");
