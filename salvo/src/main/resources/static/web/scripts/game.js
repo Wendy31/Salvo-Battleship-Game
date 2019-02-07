@@ -25,7 +25,6 @@ var app = new Vue({
     clickdestroyer: true,
     clickpatrol: true,
     salvoIsPlaceable: true,
-    has5salvoes: false,
     salvoArray: [],
     shipObj: [
       {
@@ -108,7 +107,6 @@ var app = new Vue({
           has5 = false;
         }
       });
-
       if (has5) {
         fetch("/api/games/players/" + app.playerIdNumber + "/ships", {
           credentials: "include",
@@ -132,14 +130,13 @@ var app = new Vue({
           .catch(function (error) {
             console.log("Request failure: ", error);
           });
-
       } else {
         alert("You need 5 ships to play");
       }
     },
 
     postSalvoes() {
-      if (this.has5salvoes) {
+      if (app.salvoArray.length == 5) {
         fetch("/api/games/players/" + app.playerIdNumber + "/salvoes", {
           credentials: "include",
           headers: {
@@ -149,8 +146,8 @@ var app = new Vue({
           method: "POST",
           body: JSON.stringify
             ({
-              turn: "1",
-              location: ["A1", "B5", "C2"]
+              turn: null,
+              location: app.salvoArray
             })
         })
           .then(function (response) {
@@ -167,7 +164,7 @@ var app = new Vue({
             console.log("Request failure: ", error);
           });
       } else {
-        alert("You have 5 shots. USE THEM!");
+        alert("You have 5 shots. USE THEM!")
       }
     },
 
@@ -456,23 +453,18 @@ var app = new Vue({
 
         cell.onclick = (event) => {
           var cell = event.target.id;
-          for (var i = 0; i < this.salvoArray.length; i++) {
-            if (this.salvoArray.length == 5) {
-              this.has5salvoes = true;
-            }
-          }
-          if (this.has5salvoes == false) {
-            if (this.salvoArray.indexOf(cell) == -1) {
-              var hostSalvoes = document.getElementById(cell);
-              hostSalvoes.classList.add("hostSalvoes");
-              this.salvoArray.push(cell);
-              console.log(this.salvoArray);
-            } else {
-              this.salvoArray.splice(this.salvoArray.indexOf(cell), 1);
-              console.log(this.salvoArray);
-              var hostSalvoes = document.getElementById(cell);
-              hostSalvoes.classList.remove("hostSalvoes");
-            }
+          if (this.salvoArray.indexOf(cell) == -1 && this.salvoArray.length < 5) { // if index of this cell ID doesnt exist and less than 5 put salvoes in
+            var hostSalvoes = document.getElementById(cell);
+            hostSalvoes.classList.add("hostSalvoes");
+            this.salvoArray.push(cell);
+            console.log(this.salvoArray);
+          } else if (this.salvoArray.indexOf(cell) != -1) { // else if index of thid cell ID  DOES exist, remove from array and class name
+            this.salvoArray.splice(this.salvoArray.indexOf(cell), 1);
+            console.log(this.salvoArray);
+            var hostSalvoes = document.getElementById(cell);
+            hostSalvoes.classList.remove("hostSalvoes");
+          } else {
+            alert("You can only place 5 shots")
           }
         }
 
@@ -495,8 +487,9 @@ var app = new Vue({
             var salvoLocation = turn[salvo]; // locations of salvoes
             console.log(salvoLocation);
             if (keyID == this.playerIdNumber) {
-              var hostSalvoes = document.getElementById(salvoLocation + "opp");
+              var hostSalvoes = document.getElementById(salvoLocation);
               hostSalvoes.classList.add("hostSalvoes");
+              console.log(keyTurn);
               hostSalvoes.textContent = keyTurn;
             } else {
               for (var i = 0; i < this.ships.length; i++) {

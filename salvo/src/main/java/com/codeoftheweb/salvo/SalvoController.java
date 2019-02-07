@@ -274,13 +274,13 @@ public class SalvoController {
         } else if (!loggedPlayer.getId().equals(gamePlayer.getPlayer().getId())) { // if logged in player does NOT equal gamePlayer's player ID
             return new ResponseEntity<>(makeMap("error", "No such game player."), HttpStatus.UNAUTHORIZED);
 
-        } else if (!gamePlayer.getSalvoes().isEmpty()) { // if user already has salvoes
-            return new ResponseEntity<>(makeMap("error", "You have salvoes placed already."), HttpStatus.FORBIDDEN);
+        } else if (salvo.getLocation().size() != 5) { // if user already has salvoes
+            return new ResponseEntity<>(makeMap("error", "You must have 5 salvoes to play."), HttpStatus.FORBIDDEN);
 
         } else {
             gamePlayer.addSalvo(salvo);
-            salvoRepository.save(new Salvo(gamePlayer.getMostRecentTurn() + 1, salvo.getLocation(), gamePlayer)); // For each salvo, add to gamePlayer and save to salvoRepo with 3 params (as per the constructor)
-            return new ResponseEntity<>(makeMap("success", "salvoes placed"), HttpStatus.CREATED); // save new Salvo (the most recent turn, location, and gamePLayer)
+            salvoRepository.save(new Salvo(gamePlayer.getSalvoes().size(), salvo.getLocation(), gamePlayer)); // For each salvo, add to gamePlayer and save to salvoRepo with 3 params (as per the constructor)
+            return new ResponseEntity<>(makeMap("success", "Salvoes placed"), HttpStatus.CREATED); // save new Salvo (the most recent turn, location, and gamePLayer)
         }
     }
 

@@ -102,16 +102,16 @@ public class GamePlayer {
         salvoes.add(salvo); // add one salvo to list of salvos (variable) at a time
     }
 
-    public Integer getMostRecentTurn(){
-        if (!getSalvoes().isEmpty()){
-            return salvoes.stream()
-                    .map(salvo -> salvo.getTurn())
-                    .max((x, y) -> Integer.compare(x,y))
-                    .get();
-        } else {
-            return 0;
-        }
-    }
+//    public Integer getMostRecentTurn(){
+//        if (!getSalvoes().isEmpty()){
+//            return salvoes.stream()
+//                    .map(salvo -> salvo.getTurn())
+//                    .max((x, y) -> Integer.compare(x,y))
+//                    .get();
+//        } else {
+//            return 0;
+//        }
+//    }
 
     @Override
     public String toString() {
