@@ -454,11 +454,13 @@ var app = new Vue({
         cell.onclick = (event) => {
           var cell = event.target.id;
           if (this.salvoArray.indexOf(cell) == -1 && this.salvoArray.length < 5) { // if index of this cell ID doesnt exist and less than 5 put salvoes in
-            var hostSalvoes = document.getElementById(cell);
-            hostSalvoes.classList.add("hostSalvoes");
-            this.salvoArray.push(cell);
-            console.log(this.salvoArray);
-          } else if (this.salvoArray.indexOf(cell) != -1) { // else if index of thid cell ID  DOES exist, remove from array and class name
+            if (!document.getElementById(cell).classList.contains("hostSalvoes")) {
+              var hostSalvoes = document.getElementById(cell);
+              hostSalvoes.classList.add("hostSalvoes");
+              this.salvoArray.push(cell);
+              console.log(this.salvoArray);
+            }
+          } else if (this.salvoArray.indexOf(cell) != -1) { // else if index of thid cell ID DOES exist, remove from array and class name
             this.salvoArray.splice(this.salvoArray.indexOf(cell), 1);
             console.log(this.salvoArray);
             var hostSalvoes = document.getElementById(cell);

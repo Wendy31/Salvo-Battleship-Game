@@ -13,7 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import static java.util.stream.Collectors.toList;
+
+import static java.util.stream.Collectors.*;
 
 @RestController // gets data on request and returns a data (JSON) from GameRepo
 @RequestMapping("/api") // avoids URL name conflicts
@@ -116,6 +117,9 @@ public class SalvoController {
                         .flatMap(salvoes -> salvoes.stream())
                         .collect(Collectors.toSet())));// GP has set of ships
 
+
+
+
                 return new ResponseEntity<>(getGameView, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(makeMap("error", "You can not view your opponent's game information."), HttpStatus.FORBIDDEN);
@@ -125,6 +129,12 @@ public class SalvoController {
         }
     }
 
+    private GamePlayer getOpponentInfo(GamePlayer gamePlayer) { // gets the Opponent object
+        GamePlayer opponentGP =  gamePlayer.getGame().getGamePlayers()
+              .stream()
+              .filter(gp -> !gp.getId().equals(gamePlayer.getId())).findFirst().orElse(null); // gets the first ID that's not equal to my ID (logged in player)
+        return opponentGP;
+    }
 
     private Map<String, Object> getCurrentGPShip(Ship ship) {
         Map<String, Object> getCurrentGPShip = new HashMap<>();
