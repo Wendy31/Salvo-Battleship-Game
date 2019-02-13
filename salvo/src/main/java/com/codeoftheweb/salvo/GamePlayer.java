@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -102,16 +103,18 @@ public class GamePlayer {
         salvoes.add(salvo); // add one salvo to list of salvos (variable) at a time
     }
 
-//    public Integer getMostRecentTurn(){
-//        if (!getSalvoes().isEmpty()){
-//            return salvoes.stream()
-//                    .map(salvo -> salvo.getTurn())
-//                    .max((x, y) -> Integer.compare(x,y))
-//                    .get();
-//        } else {
-//            return 0;
-//        }
-//    }
+    public GamePlayer getOpponentInfo() { // gets the Opponent object
+        if(this.getGame().getGamePlayers().size() > 1) {
+            GamePlayer opponentGP = this.getGame().getGamePlayers()
+                    .stream()
+                    .filter(gp -> !gp.getId().equals(this.getId()))
+                    .findFirst()
+                    .orElse(null); // gets the first ID that's not equal to my ID (logged in player)
+            return opponentGP;
+        } else{
+            return null;
+        }
+    }
 
     @Override
     public String toString() {

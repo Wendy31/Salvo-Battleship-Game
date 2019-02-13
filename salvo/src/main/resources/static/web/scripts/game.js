@@ -78,6 +78,7 @@ var app = new Vue({
             console.log(app.salvoes);
             app.getSalvoLocation();
             app.highlightSalvoPreLoc();
+            app.showOppHits();
           }
         });
     },
@@ -504,6 +505,24 @@ var app = new Vue({
                 }
               }
             }
+          }
+        }
+      }
+    },
+
+    //...................................HITS ON MY GRID......................................//
+    showOppHits() {
+
+      // var oppHits;
+      for (var i = 0; i < this.ships.length; i++) {
+        for (var j = 0; j < this.ships[i].length; j++) {
+          var hostShips = this.ships[i].locations[j];
+          console.log(hostShips);
+
+          var cell = document.getElementById(hostShips);
+          console.log(cell);
+          if (cell.classList.contains("opponentSalvoes") && cell.classList.contains("shipLocation")) {
+            cell.classList.add("oppHits");
           }
         }
       }

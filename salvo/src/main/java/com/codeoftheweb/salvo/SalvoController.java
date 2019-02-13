@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,8 +118,13 @@ public class SalvoController {
                         .flatMap(salvoes -> salvoes.stream())
                         .collect(Collectors.toSet())));// GP has set of ships
 
-
-
+//                GamePlayer opponentInfo = gamePlayer.getOpponentInfo();
+//                if (opponentInfo != null) {
+//                    getGameView.put("opponent_salvoes", opponentInfo.getSalvoes()
+//                            .stream()
+//                            .map(salvo -> salvo.getLocation())
+//                            .collect(toList()));
+//                }
 
                 return new ResponseEntity<>(getGameView, HttpStatus.CREATED);
             } else {
@@ -129,13 +135,6 @@ public class SalvoController {
         }
     }
 
-    private GamePlayer getOpponentInfo(GamePlayer gamePlayer) { // gets the Opponent object
-        GamePlayer opponentGP =  gamePlayer.getGame().getGamePlayers()
-              .stream()
-              .filter(gp -> !gp.getId().equals(gamePlayer.getId())).findFirst().orElse(null); // gets the first ID that's not equal to my ID (logged in player)
-        return opponentGP;
-    }
-
     private Map<String, Object> getCurrentGPShip(Ship ship) {
         Map<String, Object> getCurrentGPShip = new HashMap<>();
         getCurrentGPShip.put("type", ship.getShipType());
@@ -143,6 +142,7 @@ public class SalvoController {
         return getCurrentGPShip;
     }
 
+    // gets salvoes of current and opponent's
     private Map<Long, Map> getSalvoInfo(Set<Salvo> salvos) { // Map with Long (id) as key, with another Map inside
         Map<Long, Map> getSalvoInfo = new HashMap<>();
         Map<String, List<String>> salvoTurnAndLocation; // second Map is String (turn) with list of string values (locations)
