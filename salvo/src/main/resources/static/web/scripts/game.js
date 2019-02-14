@@ -76,9 +76,8 @@ var app = new Vue({
             app.showGameAndPlayerInfoGV();
             app.salvoes = myData.salvoes;
             console.log(app.salvoes);
-            app.getSalvoLocation();
-            app.highlightSalvoPreLoc();
-            app.showOppHits();
+            app.getOppSalvoAndHitLocation();
+            app.highlightHostSalvoPreLoc();
           }
         });
     },
@@ -436,7 +435,7 @@ var app = new Vue({
 
 
     //...................................SALVOES......................................//
-    highlightSalvoPreLoc() {
+    highlightHostSalvoPreLoc() {
       var cells = document.querySelectorAll(".gridTD"); // select all grid cells
       cells.forEach(cell => {
         cell.onmouseover = (event) => {
@@ -454,17 +453,19 @@ var app = new Vue({
 
         cell.onclick = (event) => {
           var cell = event.target.id;
-          if (this.salvoArray.indexOf(cell) == -1 && this.salvoArray.length < 5) { // if index of this cell ID doesnt exist and less than 5 put salvoes in
+          var cellIDwithoutOPP = cell.split("opp")[0]; // returns an array of postition 0
+          console.log(cellIDwithoutOPP);
+          if (this.salvoArray.indexOf(cellIDwithoutOPP) == -1 && this.salvoArray.length < 5) { // if index of this cell ID doesnt exist and less than 5 put salvoes in
             if (!document.getElementById(cell).classList.contains("hostSalvoes")) {
-              var hostSalvoes = document.getElementById(cell);
+              var hostSalvoes = document.getElementById(cellIDwithoutOPP + "opp");
               hostSalvoes.classList.add("hostSalvoes");
-              this.salvoArray.push(cell);
+              this.salvoArray.push(cellIDwithoutOPP);
               console.log(this.salvoArray);
             }
-          } else if (this.salvoArray.indexOf(cell) != -1) { // else if index of thid cell ID DOES exist, remove from array and class name
+          } else if (this.salvoArray.indexOf(cellIDwithoutOPP) != -1) { // else if index of thid cell ID DOES exist, remove from array and class name
             this.salvoArray.splice(this.salvoArray.indexOf(cell), 1);
             console.log(this.salvoArray);
-            var hostSalvoes = document.getElementById(cell);
+            var hostSalvoes = document.getElementById(cellIDwithoutOPP + "opp");
             hostSalvoes.classList.remove("hostSalvoes");
           } else {
             alert("You can only place 5 shots")
@@ -479,50 +480,28 @@ var app = new Vue({
       })
     },
 
-    getSalvoLocation() {
-      for (var keyID in this.salvoes) {
-        // displays players ID
-        for (var keyTurn in this.salvoes[keyID]) {
-          // Displays turn
+    getOppSalvoAndHitLocation() {
+      for (var keyID in this.salvoes) { // displays players ID
+        for (var keyTurn in this.salvoes[keyID]) { // Displays turn
           var turn = this.salvoes[keyID][keyTurn]; // display turn number
-          console.log(turn);
           for (var salvo in turn) {
             var salvoLocation = turn[salvo]; // locations of salvoes
-            console.log(salvoLocation);
-            if (keyID == this.playerIdNumber) {
-              var hostSalvoes = document.getElementById(salvoLocation);
-              hostSalvoes.classList.add("hostSalvoes");
-              console.log(keyTurn);
-              hostSalvoes.textContent = keyTurn;
-            } else {
-              for (var i = 0; i < this.ships.length; i++) {
-                // loop thru each ship
-                if (this.ships[i].locations.includes(salvoLocation)) {
-                  // if ship location has salvoLocation
-                  var opponentSalvoes = document.getElementById(salvoLocation); // add salvoLocation to grid element
-                  opponentSalvoes.classList.add("opponentSalvoes"); // add class for CSS
-                  opponentSalvoes.textContent = keyTurn;
+            if (keyID != this.playerIdNumber) { // current player
+              var opponentSalvoes = document.getElementById(salvoLocation);
+              opponentSalvoes.classList.add("opponentSalvoes");
+              opponentSalvoes.textContent = keyTurn;
+              for (var i = 0; i < this.ships.length; i++) { // loop thru each ship
+                if (this.ships[i].locations.includes(salvoLocation)) { // if ship location ARRAY has salvoLocation = HIT
+                  var oppHits = document.getElementById(salvoLocation); // add salvoLocation to grid element
+                  oppHits.classList.add("oppHits"); // add class for CSS
+                  oppHits.textContent = "HIT!";
                 }
               }
+            } else {
+              var hostSalvoes = document.getElementById(salvoLocation + "opp");
+              hostSalvoes.classList.add("hostSalvoes");
+              hostSalvoes.textContent = keyTurn;
             }
-          }
-        }
-      }
-    },
-
-    //...................................HITS ON MY GRID......................................//
-    showOppHits() {
-
-      // var oppHits;
-      for (var i = 0; i < this.ships.length; i++) {
-        for (var j = 0; j < this.ships[i].length; j++) {
-          var hostShips = this.ships[i].locations[j];
-          console.log(hostShips);
-
-          var cell = document.getElementById(hostShips);
-          console.log(cell);
-          if (cell.classList.contains("opponentSalvoes") && cell.classList.contains("shipLocation")) {
-            cell.classList.add("oppHits");
           }
         }
       }

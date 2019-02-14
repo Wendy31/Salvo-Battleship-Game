@@ -19,16 +19,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class SalvoApplication {
@@ -36,7 +32,6 @@ public class SalvoApplication {
     public static void main(String[] args) {
         SpringApplication.run(SalvoApplication.class, args);
     }
-
 
 
     @Bean

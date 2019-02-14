@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -116,15 +117,7 @@ public class SalvoController {
                         .stream()
                         .map(gp -> gp.getSalvoes())
                         .flatMap(salvoes -> salvoes.stream())
-                        .collect(Collectors.toSet())));// GP has set of ships
-
-//                GamePlayer opponentInfo = gamePlayer.getOpponentInfo();
-//                if (opponentInfo != null) {
-//                    getGameView.put("opponent_salvoes", opponentInfo.getSalvoes()
-//                            .stream()
-//                            .map(salvo -> salvo.getLocation())
-//                            .collect(toList()));
-//                }
+                        .collect(Collectors.toSet()),gamePlayer));// GP has set of ships
 
                 return new ResponseEntity<>(getGameView, HttpStatus.CREATED);
             } else {
@@ -135,6 +128,31 @@ public class SalvoController {
         }
     }
 
+    private Map<String, Object> getHostHits(GamePlayer gamePlayer) {
+        Map<String, Object> getHostHits = new HashMap<>();
+//
+//        Set<Ship> ships = gamePlayer.getOpponentInfo().getShips(); // has a set of ships (set does not allow dublicates like lists)
+//        Stream<Ship> streamOfShips = ships.stream(); // uses class stream to perform functions like map, filter etc
+//        Stream<List<String>> streamOflistOfShips = streamOfShips.map(ship -> ship.getLocation()); // a stream of a list with strings of locations
+//        List<String> listOflistOfShips = streamOflistOfShips
+//                .flatMap(pos-> pos.stream())
+//                .collect(toList()); // list of lists, that is converted back to a list
+
+
+        List<String> oppShipPositions = gamePlayer.getOpponentInfo().getShips()
+                .stream()
+                .map(ship -> ship.getLocation())
+                .flatMap(location->location.stream())
+                .collect(toList());
+
+
+
+        System.out.println(oppShipPositions);
+
+
+        return getHostHits;
+    }
+
     private Map<String, Object> getCurrentGPShip(Ship ship) {
         Map<String, Object> getCurrentGPShip = new HashMap<>();
         getCurrentGPShip.put("type", ship.getShipType());
@@ -143,17 +161,34 @@ public class SalvoController {
     }
 
     // gets salvoes of current and opponent's
-    private Map<Long, Map> getSalvoInfo(Set<Salvo> salvos) { // Map with Long (id) as key, with another Map inside
-        Map<Long, Map> getSalvoInfo = new HashMap<>();
+    private Map<Long, Map> getSalvoInfo(Set<Salvo> salvos, GamePlayer gamePlayer) { // Map with Long (id) as key, with another Map inside
+        Map<Long, Map> getSalvoInfo = new HashMap<>(); // map with objects, inside object a list
         Map<String, List<String>> salvoTurnAndLocation; // second Map is String (turn) with list of string values (locations)
+        List<String> oppShipPositions = gamePlayer.getOpponentInfo().getShips()
+                .stream()
+                .map(ship -> ship.getLocation())
+                .flatMap(location->location.stream())
+                .collect(toList());
+
         for (Salvo salvo : salvos) { // loop thru all salvo in salvoes
-            if (!getSalvoInfo.containsKey(salvo.getGamePlayer().getId())) { // if main map does not contain key ID
+            List<String> hits = new ArrayList<>();
+            if (!getSalvoInfo.containsKey(salvo.getGamePlayer().getId())) { // if not current player
                 salvoTurnAndLocation = new HashMap<>(); // make new map
                 salvoTurnAndLocation.put(salvo.getTurn().toString(), salvo.getLocation()); // put Turn as key, Location as value
                 getSalvoInfo.put(salvo.getGamePlayer().getId(), salvoTurnAndLocation); // and put main map with key ID, and turn/location as value
+
             } else { // else if map has id of first player, salvoTurnAndLocation-Map becomes main Map with opponent ID
-                salvoTurnAndLocation = getSalvoInfo.get(salvo.getGamePlayer().getId());
+                salvoTurnAndLocation = getSalvoInfo.get(salvo.getGamePlayer().getId()); // get current player
                 salvoTurnAndLocation.put(salvo.getTurn().toString(), salvo.getLocation()); // with Opponent turn/ location info
+
+                for (String salvoo: salvo.getLocation()) {
+                    if(oppShipPositions.contains(salvoo)){
+                       hits.add(salvoo);
+                    }
+                }
+                salvoTurnAndLocation.put( "hits"+salvo.getTurn().toString(), hits);
+
+
             }
         }
         return getSalvoInfo;
