@@ -136,7 +136,7 @@ public class SalvoApplication {
             Ship ship1 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("H2", "H3", "H4")), gp1);
             Ship ship2 = new Ship("Submarine", new ArrayList<>(Arrays.asList("E1", "F1", "G1")), gp1);
             Ship ship3 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("B4", "B5")), gp1);
-            Ship ship4 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "C5")), gp2);
+            Ship ship4 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp2);
             Ship ship5 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("F1", "F2")), gp2);
 
             //.... game two ....//
