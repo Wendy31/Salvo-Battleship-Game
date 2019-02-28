@@ -86,9 +86,11 @@ h3 {
   width: 50px;
 }
 
-.oppHits{
+.hostHits,
+.oppHits {
   background-color: yellow;
 }
+
 
 /*.................Ship key table.....................*/
 .shipKeyTable {

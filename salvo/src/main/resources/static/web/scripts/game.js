@@ -11,6 +11,7 @@ var app = new Vue({
     currentPlayer: null,
     opponentPlayer: null,
     salvoes: {},
+    hostHits: {},
     logoutBtn: true,
     wrongPlace: false,
     existingShip: false,
@@ -57,7 +58,7 @@ var app = new Vue({
 
   methods: {
     fetchData() {
-      fetch(this.apiGameView, { // fectch data from controller
+      fetch(this.apiGameView, { // fetch data from controller
         method: "GET"
       })
         .then(function (data) {
@@ -75,6 +76,8 @@ var app = new Vue({
             app.getShipLocation(); // function needs data first in order to run. Get data, then it can show ship location.
             app.showGameAndPlayerInfoGV();
             app.salvoes = myData.salvoes;
+            app.hostHits = myData.host_hits;
+            console.log(app.hostHits);
             console.log(app.salvoes);
             app.getOppSalvoAndHitLocation();
             app.highlightHostSalvoPreLoc();
@@ -497,10 +500,18 @@ var app = new Vue({
                   oppHits.textContent = "HIT!";
                 }
               }
-            } else {
+            } else { // display host salvoes and hits
               var hostSalvoes = document.getElementById(salvoLocation + "opp");
               hostSalvoes.classList.add("hostSalvoes");
               hostSalvoes.textContent = keyTurn;
+              console.log(hostSalvoes);
+              for (var key in this.hostHits) {
+                var hitLocation = key + "opp";
+                if (hostSalvoes.id == hitLocation) {
+                  hostSalvoes.classList.add("hostHits");
+                  hostSalvoes.textContent = "HIT!";
+                }
+              }
             }
           }
         }

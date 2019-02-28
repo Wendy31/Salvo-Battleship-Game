@@ -133,45 +133,45 @@ public class SalvoApplication {
 
             // .......................create ships, ship locations and add ships to gamePlayer........................//
             //.... game one ....//
-            Ship ship1 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("H2", "H3", "H4")), gp1);
-            Ship ship2 = new Ship("Submarine", new ArrayList<>(Arrays.asList("E1", "F1", "G1")), gp1);
-            Ship ship3 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("B4", "B5")), gp1);
-            Ship ship4 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp2);
-            Ship ship5 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("F1", "F2")), gp2);
+            Ship ship1 = new Ship("destroyer", new ArrayList<>(Arrays.asList("H2", "H3", "H4")), gp1);
+            Ship ship2 = new Ship("submarine", new ArrayList<>(Arrays.asList("E1", "F1", "G1")), gp1);
+            Ship ship3 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("B4", "B5")), gp1);
+            Ship ship4 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp2);
+            Ship ship5 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("F1", "F2")), gp2);
 
             //.... game two ....//
-            Ship ship6 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp3);
-            Ship ship7 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp3);
-            Ship ship8 = new Ship("Submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp4);
-            Ship ship9 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp4);
+            Ship ship6 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp3);
+            Ship ship7 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp3);
+            Ship ship8 = new Ship("submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp4);
+            Ship ship9 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp4);
 
             //.... game three ....//
-            Ship ship10 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp5);
-            Ship ship11 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp5);
-            Ship ship12 = new Ship("Submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp6);
-            Ship ship13 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp6);
+            Ship ship10 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp5);
+            Ship ship11 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp5);
+            Ship ship12 = new Ship("submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp6);
+            Ship ship13 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp6);
 
             //.... game four ....//
-            Ship ship14 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp7);
-            Ship ship15 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp7);
-            Ship ship16 = new Ship("Submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp8);
-            Ship ship17 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp8);
+            Ship ship14 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp7);
+            Ship ship15 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp7);
+            Ship ship16 = new Ship("submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp8);
+            Ship ship17 = new Ship("patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp8);
 
             //.... game five ....//
-            Ship ship18 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp9);
-            Ship ship19 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp9);
-            Ship ship20 = new Ship("Submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp10);
-            Ship ship21 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp10);
+            Ship ship18 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp9);
+            Ship ship19 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp9);
+            Ship ship20 = new Ship("submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp10);
+            Ship ship21 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp10);
 
             //.... game six ....//
-            Ship ship22 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp11);
-            Ship ship23 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp11);
+            Ship ship22 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp11);
+            Ship ship23 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp11);
 
             //.... game eight ....//
-            Ship ship30 = new Ship("Destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp15);
-            Ship ship31 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp15);
-            Ship ship32 = new Ship("Submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp16);
-            Ship ship33 = new Ship("Patrol Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp16);
+            Ship ship30 = new Ship("destroyer", new ArrayList<>(Arrays.asList("B5", "C5", "D5")), gp15);
+            Ship ship31 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("C6", "C7")), gp15);
+            Ship ship32 = new Ship("submarine", new ArrayList<>(Arrays.asList("A2", "A3", "A4")), gp16);
+            Ship ship33 = new Ship("patrol_Boat", new ArrayList<>(Arrays.asList("G6", "H6")), gp16);
 
             shipRepository.save(ship1);
             shipRepository.save(ship2);

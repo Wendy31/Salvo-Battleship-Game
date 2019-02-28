@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
-@RestController // gets data on request and returns a data (JSON) from GameRepo
+@RestController // gets data on request and returns raw data (JSON) from GameRepo, in HTTP response body
 @RequestMapping("/api") // avoids URL name conflicts
 public class SalvoController {
 
-    @Autowired // autowired creates and instance of a class, to be used in another class.
+    @Autowired // autowired creates and instances of these repo classes, to be used in another class.
     private PlayerRepository playerRepository;
     @Autowired
     private GameRepository gameRepo;
@@ -100,8 +100,7 @@ public class SalvoController {
         if (!isGuest(authentication)) { // if user if logged in
             GamePlayer gamePlayer = gamePlayerRepo.getOne(gamePlayerId);
             Player player = playerRepository.findByUserName(authentication.getName());
-
-            if (player.getId() == gamePlayer.getPlayer().getId()) { // AND user id match with gp ID
+            if (player.getId().equals(gamePlayer.getPlayer().getId())) { // AND user id match with gp ID
                 getGameView.put("id", gamePlayer.getGame().getId()); // start point from gamePlayer, to access Game, then gameID
                 getGameView.put("created", gamePlayer.getGame().getDate());
                 getGameView.put("gamePlayers", gamePlayer.getGame().getGamePlayers()
@@ -117,7 +116,7 @@ public class SalvoController {
                         .map(gp -> gp.getSalvoes())
                         .flatMap(salvoes -> salvoes.stream())
                         .collect(Collectors.toSet())));// GP has set of ships
-                getGameView.put("opponent_hits", getHostHits(gamePlayer));
+                getGameView.put("host_hits", getHostSalvoes(gamePlayer));
 
                 return new ResponseEntity<>(getGameView, HttpStatus.CREATED);
             } else {
@@ -128,17 +127,11 @@ public class SalvoController {
         }
     }
 
-    private Map<String, Object> getHostHits(GamePlayer gamePlayer) {
-        Map<String, Object> getHostHits = new HashMap<>();
+    // method to get opp hits and ship type
+    private Map<String, Object> getHostSalvoes(GamePlayer gamePlayer) {
+        Map<String, Object> getHostSalvoes = new HashMap<>(); // map = object
 
-//        Set<Ship> ships = gamePlayer.getOpponentInfo().getShips(); // has a set of ships (set does not allow dublicates like lists)
-//        Stream<Ship> streamOfShips = ships.stream(); // uses class stream to perform functions like map, filter etc
-//        Stream<List<String>> streamOflistOfShips = streamOfShips.map(ship -> ship.getLocation()); // a stream of a list with strings of locations
-//        List<String> listOflistOfShips = streamOflistOfShips
-//                .flatMap(pos-> pos.stream())
-//                .collect(toList()); // list of lists, that is converted back to a list
-
-        List<String> oppShipPositions = gamePlayer.getOpponentInfo().getShips() // list of opponent's ships
+        List<String> oppShipPositions = gamePlayer.getOpponentInfo().getShips() // list of opponent's ship location
                 .stream()
                 .map(ship -> ship.getLocation())
                 .flatMap(location -> location.stream())
@@ -150,16 +143,26 @@ public class SalvoController {
                 .flatMap(loc -> loc.stream())
                 .collect(toList());
 
-        List<String> hits = new ArrayList<>(); // if opp ship locations have host salvoes, add to array
+        // list of opp hits
+        List<String> hits = new ArrayList<>(); // empty array
         for (String salvoo : hostSalvoes) {
-            if (oppShipPositions.contains(salvoo)) {
+            if (oppShipPositions.contains(salvoo)) { // if opp ship locations have host salvoes, add to array
                 hits.add(salvoo);
             }
         }
-        getHostHits.put("hits", hits); // put list of hits in a map and return
-        return getHostHits;
+
+        // gets name of hit ships
+        for (Ship ship : gamePlayer.getOpponentInfo().getShips()) { // for each ship of opp ships
+            for (String hit : hits) { // for each hit of hits
+                if (ship.getLocation().contains(hit)) { // if opp ship locations == hits, put to map
+                    getHostSalvoes.put(hit,ship.getShipType()); // call empty map above
+                }
+            }
+        }
+        return getHostSalvoes;
     }
 
+    // method to get host ships
     private Map<String, Object> getCurrentGPShip(Ship ship) {
         Map<String, Object> getCurrentGPShip = new HashMap<>();
         getCurrentGPShip.put("type", ship.getShipType());
@@ -170,6 +173,7 @@ public class SalvoController {
     // gets salvoes of current and opponent's
     private Map<Long, Map> getSalvoInfo(Set<Salvo> salvos) { // Map with Long (id) as key, with another Map inside
         Map<Long, Map> getSalvoInfo = new HashMap<>(); // map with objects, inside object a list
+
         Map<String, List<String>> salvoTurnAndLocation; // second Map is String (turn) with list of string values (locations)
         for (Salvo salvo : salvos) { // loop thru all salvo in salvoes
             if (!getSalvoInfo.containsKey(salvo.getGamePlayer().getId())) { // if not current player
